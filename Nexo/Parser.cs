@@ -35,11 +35,89 @@ namespace Nexo
             {
                 ParseAssignmentOrUseStatement();
             }
+            else if (currentToken.TokenType == Token.Type.Number)
+            {
+                MathematicalOperations();
+            }
             else
             {
                
                 Console.WriteLine("Error: Unexpected token type.");
                 _position++; 
+            }
+        }
+
+        private void MathematicalOperations()
+        {
+            Token numberToken = _tokens[_position];
+            _position++;
+
+            if (_position < _tokens.Count)
+            {
+                Token operatorToken = _tokens[_position];
+                _position++;
+
+                if (_position < _tokens.Count)
+                {
+                    Token secondNumberToken = _tokens[_position];
+                    _position++;
+
+                    if (operatorToken.TokenType == Token.Type.Symbol)
+                    {
+                        int firstValue, secondValue;
+                        if (int.TryParse(numberToken.Value, out firstValue) && int.TryParse(secondNumberToken.Value, out secondValue))
+                        {
+                            int result = 0;
+                            if (operatorToken.Value == "+")
+                            {
+                                result = firstValue + secondValue;
+                            }
+                            else if (operatorToken.Value == "-")
+                            {
+                                result = firstValue - secondValue;
+                            }
+                            else if (operatorToken.Value == "*")
+                            {
+                                result = firstValue * secondValue;
+                            }
+                            else if (operatorToken.Value == "/")
+                            {
+                                if (secondValue != 0)
+                                {
+                                    result = firstValue / secondValue;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Error: Division by zero.");
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Error: Invalid operator.");
+                                return;
+                            }
+
+                            Console.WriteLine($"Result: {result}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error: Invalid number values.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Expected operator after the number.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Error: Incomplete statement.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error: Incomplete statement.");
             }
         }
 
@@ -52,7 +130,7 @@ namespace Nexo
             {
                 Token nextToken = _tokens[_position];
 
-                if (nextToken.TokenType == Token.Type.Symbol && nextToken.Value == "=")
+                if (nextToken.TokenType == Token.Type.Symbol && nextToken.Value == "=") 
                 {
                     
                     _position++; 
@@ -84,6 +162,7 @@ namespace Nexo
                         Console.WriteLine("Error: Incomplete statement.");
                     }
                 }
+                
             }
             else
             {
@@ -91,4 +170,5 @@ namespace Nexo
             }
         }
     }
+
 }
