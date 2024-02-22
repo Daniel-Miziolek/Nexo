@@ -61,7 +61,7 @@ namespace Nexo
             {
                 Token nextToken = _tokens[_position];
 
-              
+
                 while (_position < _tokens.Count)
                 {
                     Console.Write(nextToken.Value + " ");
@@ -101,10 +101,10 @@ namespace Nexo
 
                     if (operatorToken.TokenType == Token.Type.Symbol)
                     {
-                        int firstValue, secondValue;
-                        if (int.TryParse(numberToken.Value, out firstValue) && int.TryParse(secondNumberToken.Value, out secondValue))
+                        double firstValue, secondValue;
+                        if (Double.TryParse(numberToken.Value, out firstValue) && Double.TryParse(secondNumberToken.Value, out secondValue))
                         {
-                            int result = 0;
+                            double result = 0;
                             if (operatorToken.Value == "+")
                             {
                                 result = firstValue + secondValue;
@@ -128,6 +128,10 @@ namespace Nexo
                                     Console.WriteLine("Error: Division by zero.");
                                     return;
                                 }
+                            }
+                            else if (operatorToken.Value == "^")
+                            {
+                                result = Math.Pow(firstValue, secondValue);
                             }
                             else
                             {
@@ -161,16 +165,16 @@ namespace Nexo
         private void ParseAssignmentOrUseStatement()
         {
             Token wordToken = _tokens[_position];
-            _position++; 
+            _position++;
 
             if (_position < _tokens.Count)
             {
                 Token nextToken = _tokens[_position];
 
-                if (nextToken.TokenType == Token.Type.Symbol && nextToken.Value == "=") 
+                if (nextToken.TokenType == Token.Type.Symbol && nextToken.Value == "=")
                 {
-                    
-                    _position++; 
+
+                    _position++;
 
                     if (_position < _tokens.Count)
                     {
@@ -187,7 +191,7 @@ namespace Nexo
                             {
                                 Console.WriteLine($"Error: Invalid number value '{valueToken.Value}'");
                             }
-                            _position++; 
+                            _position++;
                         }
                         else
                         {
@@ -199,7 +203,7 @@ namespace Nexo
                         Console.WriteLine("Error: Incomplete statement.");
                     }
                 }
-                
+
             }
             else
             {
