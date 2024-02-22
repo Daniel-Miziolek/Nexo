@@ -33,7 +33,14 @@ namespace Nexo
 
             if (currentToken.TokenType == Token.Type.Word)
             {
-                ParseAssignmentOrUseStatement();
+                if (currentToken.Value == "print")
+                {
+                    Print();
+                }
+                else
+                {
+                    ParseAssignmentOrUseStatement();
+                }
             }
             else if (currentToken.TokenType == Token.Type.Number)
             {
@@ -41,11 +48,41 @@ namespace Nexo
             }
             else
             {
-               
                 Console.WriteLine("Error: Unexpected token type.");
-                _position++; 
+                _position++;
             }
         }
+
+        private void Print()
+        {
+            _position++;
+
+            if (_position < _tokens.Count)
+            {
+                Token nextToken = _tokens[_position];
+
+              
+                while (_position < _tokens.Count)
+                {
+                    Console.Write(nextToken.Value + " ");
+                    _position++;
+
+                    if (_position < _tokens.Count)
+                        nextToken = _tokens[_position];
+                }
+
+                Console.WriteLine();
+            }
+            else
+            {
+                Console.WriteLine("Error: Incomplete statement.");
+            }
+        }
+
+
+
+
+
 
         private void MathematicalOperations()
         {
