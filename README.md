@@ -4,7 +4,7 @@ A simple console programming languege
 
 ## Description
 
-This C# program allows you to create variables, print some text, do some mathematical operations like addition, substraction, multiplication, division, exponentiation.
+This C# program allows you to create variables, print out, do some mathematical operations like addition, substraction, multiplication, division, exponentiation.
 
 ## Examples
 
