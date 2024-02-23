@@ -37,11 +37,15 @@ namespace Nexo
                 {
                     Print();
                 }
+                else if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "if")
+                {
+                    Conditions();
+                }
                 else
                 {
                     ParseAssignmentOrUseStatement();
                 }
-            }
+            }            
             else if (currentToken.TokenType == Token.Type.Number)
             {
                 MathematicalOperations();
@@ -56,6 +60,64 @@ namespace Nexo
                 _position++;
             }
         }
+
+        private void Conditions()
+        {
+            _position++;
+
+            if (_position < _tokens.Count)
+            {
+                Token n1 = _tokens[_position];
+                if (int.TryParse(n1.Value, out int value))
+                {
+                    _position++;
+                    if (_position < _tokens.Count)
+                    {
+                        Token sym = _tokens[_position];
+                        _position++;
+                        if (_position < _tokens.Count)
+                        {
+                            Token n2 = _tokens[_position];
+                            if (int.TryParse(n2.Value, out int value2))
+                            {
+                                if (n1.TokenType == Token.Type.Number && n2.TokenType == Token.Type.Number &&
+                                    sym.TokenType == Token.Type.Symbol && sym.Value == ">" && value > value2)
+                                {
+                                    Console.WriteLine(true);
+                                }
+                                else if (n1.TokenType == Token.Type.Number && n2.TokenType == Token.Type.Number &&
+                                    sym.TokenType == Token.Type.Symbol && sym.Value == "<" && value < value2)
+                                {
+                                    Console.WriteLine(true);
+                                }
+                                else if (n1.TokenType == Token.Type.Number && n2.TokenType == Token.Type.Number &&
+                                    sym.TokenType == Token.Type.Symbol && sym.Value == "=" && value == value2)
+                                {
+                                    Console.WriteLine(true);
+                                }
+                                else
+                                {
+                                    Console.WriteLine(false);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Error: Second token is not a number"); 
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Error: First token is not a number"); 
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error: Not enough tokens to check condition."); 
+            }
+        }
+
 
         private void Comment()
         {
@@ -90,9 +152,6 @@ namespace Nexo
                             nextToken = _tokens[_position];
                     }
                 }
-
-
-                
 
                 Console.WriteLine();
             }
