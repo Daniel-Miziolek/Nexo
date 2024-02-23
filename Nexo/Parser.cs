@@ -46,6 +46,10 @@ namespace Nexo
             {
                 MathematicalOperations();
             }
+            else if (currentToken.TokenType == Token.Type.Symbol && currentToken.Value == "#")
+            {
+                Comment();
+            }
             else
             {
                 Console.WriteLine("Error: Unexpected token type.");
@@ -53,23 +57,42 @@ namespace Nexo
             }
         }
 
+        private void Comment()
+        {
+            while (_position < _tokens.Count && !_tokens[_position].Value.Contains("\n"))
+            {
+                _position++;
+            }
+        }
+
+
         private void Print()
         {
             _position++;
 
             if (_position < _tokens.Count)
             {
+                
                 Token nextToken = _tokens[_position];
 
-
-                while (_position < _tokens.Count)
+                if (_variables.ContainsKey(nextToken.Value))
                 {
-                    Console.Write(nextToken.Value + " ");
-                    _position++;
-
-                    if (_position < _tokens.Count)
-                        nextToken = _tokens[_position];
+                    Console.WriteLine(_variables[nextToken.Value]);
                 }
+                else
+                {
+                    while (_position < _tokens.Count)
+                    {
+                        Console.Write(nextToken.Value + " ");
+                        _position++;
+
+                        if (_position < _tokens.Count)
+                            nextToken = _tokens[_position];
+                    }
+                }
+
+
+                
 
                 Console.WriteLine();
             }
