@@ -83,17 +83,69 @@ namespace Nexo
                                 if (n1.TokenType == Token.Type.Number && n2.TokenType == Token.Type.Number &&
                                     sym.TokenType == Token.Type.Symbol && sym.Value == ">" && value > value2)
                                 {
-                                    Console.WriteLine(true);
+                                    _position++;
+                                    Token klamra = _tokens[_position];
+                                    if (klamra.Value == "{")
+                                    {
+                                        _position++;
+                                        if (_position < _tokens.Count)
+                                        {
+                                            Token currentToken = _tokens[_position];
+                                            if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "print")
+                                            {
+                                                Print();
+                                            }
+                                            else if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "let")
+                                            {
+                                                ParseAssignmentOrUseStatement();
+                                            }
+                                        }
+                                    }
+                                    
                                 }
                                 else if (n1.TokenType == Token.Type.Number && n2.TokenType == Token.Type.Number &&
                                     sym.TokenType == Token.Type.Symbol && sym.Value == "<" && value < value2)
                                 {
-                                    Console.WriteLine(true);
+                                    _position++;
+                                    Token klamra = _tokens[_position];
+                                    if (klamra.Value == "{")
+                                    {
+                                        _position++;
+                                        if (_position < _tokens.Count)
+                                        {
+                                            Token currentToken = _tokens[_position];
+                                            if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "print")
+                                            {
+                                                Print();
+                                            }
+                                            else if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "let")
+                                            {
+                                                ParseAssignmentOrUseStatement();
+                                            }
+                                        }
+                                    }
                                 }
                                 else if (n1.TokenType == Token.Type.Number && n2.TokenType == Token.Type.Number &&
                                     sym.TokenType == Token.Type.Symbol && sym.Value == "=" && value == value2)
                                 {
-                                    Console.WriteLine(true);
+                                    _position++;
+                                    Token klamra = _tokens[_position];
+                                    if (klamra.Value == "{")
+                                    {
+                                        _position++;
+                                        if (_position < _tokens.Count)
+                                        {
+                                            Token currentToken = _tokens[_position];
+                                            if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "print")
+                                            {
+                                                Print();
+                                            }
+                                            else if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "let")
+                                            {
+                                                ParseAssignmentOrUseStatement();
+                                            }
+                                        }
+                                    }
                                 }
                                 else
                                 {
@@ -117,6 +169,8 @@ namespace Nexo
                 Console.WriteLine("Error: Not enough tokens to check condition."); 
             }
         }
+
+        
 
 
         private void Comment()
@@ -246,6 +300,7 @@ namespace Nexo
 
         private void ParseAssignmentOrUseStatement()
         {
+            _position++;
             Token wordToken = _tokens[_position];
             _position++;
 
