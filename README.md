@@ -15,8 +15,8 @@ This C# program allows you to create variables, print out, do some mathematical 
     >print Hello World
     Hello World
     ># Nexo
-    > if 2 > 3
-    true
+    > if 5 > 3 { print True }
+    True
 
   
    
