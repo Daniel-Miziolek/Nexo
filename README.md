@@ -8,12 +8,15 @@ This C# program allows you to create variables, print out, do some mathematical 
 
 ## Examples
 
-    > let x = 5
+    >let x = 5
     Variable x assigned the value 5
-    > 3 ^ 2
+    >3 ^ 2
     Result: 9
-    > print Hello World
+    >print Hello World
     Hello World
+    ># Nexo
+    > if 2 > 3
+    true
 
   
    
