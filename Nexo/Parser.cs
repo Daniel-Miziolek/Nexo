@@ -56,7 +56,7 @@ namespace Nexo
             }
             else
             {
-                Console.WriteLine("Error: Unexpected token type.");
+                
                 _position++;
             }
         }
@@ -137,7 +137,7 @@ namespace Nexo
                                         {
                                             Token currentToken = _tokens[_position];
                                             if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "print")
-                                            {
+                                            {                                                
                                                 Print();
                                             }
                                             else if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "let")
@@ -149,7 +149,7 @@ namespace Nexo
                                 }
                                 else
                                 {
-                                    Console.WriteLine(false);
+                                    
                                 }
                             }
                             else
@@ -211,7 +211,7 @@ namespace Nexo
             }
             else
             {
-                Console.WriteLine("Error: Incomplete statement.");
+              
             }
         }
 
@@ -279,7 +279,7 @@ namespace Nexo
                         }
                         else
                         {
-                            Console.WriteLine("Error: Invalid number values.");
+                            
                         }
                     }
                     else
@@ -289,12 +289,12 @@ namespace Nexo
                 }
                 else
                 {
-                    Console.WriteLine("Error: Incomplete statement.");
+                    
                 }
             }
             else
             {
-                Console.WriteLine("Error: Incomplete statement.");
+               
             }
         }
 
@@ -337,14 +337,14 @@ namespace Nexo
                     }
                     else
                     {
-                        Console.WriteLine("Error: Incomplete statement.");
+                       
                     }
                 }
 
             }
             else
             {
-                Console.WriteLine("Error: Incomplete statement.");
+                
             }
         }
     }
