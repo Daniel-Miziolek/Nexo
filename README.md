@@ -27,4 +27,4 @@ This C# program allows you to create variables, print out, do some mathematical 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/Daniel-Miziolek/Nexo.git
+   git clone https://github.com/Daniel-Miziolek/nexo.git
