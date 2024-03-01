@@ -89,26 +89,24 @@ namespace Nexo
                             }
                             else
                             {
+                                Console.ForegroundColor = ConsoleColor.Red;
                                 Console.WriteLine($"Error: Invalid number value '{valueToken.Value}'");
+                                Console.ResetColor();
                             }
                             _position++;
                         }
                         else
                         {
+                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("Error: Expected number after '='.");
+                            Console.ResetColor();
                         }
                     }
-                    else
-                    {
-
-                    }
+                    
                 }
 
             }
-            else
-            {
-
-            }
+            
         }
 
         private void Conditions()
@@ -204,19 +202,25 @@ namespace Nexo
                             }
                             else
                             {
+                                Console.ForegroundColor = ConsoleColor.Red;
                                 Console.WriteLine("Error: Second token is not a number");
+                                Console.ResetColor();
                             }
                         }
                     }
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Error: First token is not a number");
+                    Console.ResetColor();
                 }
             }
             else
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Error: Not enough tokens to check condition.");
+                Console.ResetColor();
             }
         }
 
@@ -260,7 +264,9 @@ namespace Nexo
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Error: no ' sign");
+                    Console.ResetColor();
                 }
 
 
@@ -314,7 +320,9 @@ namespace Nexo
                                 }
                                 else
                                 {
+                                    Console.ForegroundColor = ConsoleColor.Red;
                                     Console.WriteLine("Error: Division by zero.");
+                                    Console.ResetColor();
                                     return;
                                 }
                             }
@@ -324,7 +332,9 @@ namespace Nexo
                             }
                             else
                             {
+                                Console.ForegroundColor = ConsoleColor.Red;
                                 Console.WriteLine("Error: Invalid operator.");
+                                Console.ResetColor();
                                 return;
                             }
 
@@ -337,18 +347,12 @@ namespace Nexo
                     }
                     else
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Error: Expected operator after the number.");
+                        Console.ResetColor();
                     }
-                }
-                else
-                {
-
-                }
-            }
-            else
-            {
-
-            }
+                }               
+            }            
         }
 
         
