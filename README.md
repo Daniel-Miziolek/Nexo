@@ -12,10 +12,10 @@ This C# program allows you to create variables, print out, do some mathematical 
     Variable x assigned the value 5
     >3 ^ 2
     Result: 9
-    >print Hello World
+    >print 'Hello World'
     Hello World
     ># Nexo
-    > if 5 > 3 { print True }
+    > if 5 > 3 { print 'True' }
     True
 
   
