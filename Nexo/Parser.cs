@@ -41,11 +41,11 @@ namespace Nexo
                 {
                     Conditions();
                 }
-                else
+                else if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "let")
                 {
                     ParseAssignmentOrUseStatement();
                 }
-            }            
+            }
             else if (currentToken.TokenType == Token.Type.Number)
             {
                 MathematicalOperations();
@@ -56,8 +56,58 @@ namespace Nexo
             }
             else
             {
-                
+
                 _position++;
+            }
+        }
+
+        private void ParseAssignmentOrUseStatement()
+        {
+            _position++;
+            Token wordToken = _tokens[_position];
+            _position++;
+
+            if (_position < _tokens.Count)
+            {
+                Token nextToken = _tokens[_position];
+
+                if (nextToken.TokenType == Token.Type.Symbol && nextToken.Value == "=")
+                {
+
+                    _position++;
+
+                    if (_position < _tokens.Count)
+                    {
+                        Token valueToken = _tokens[_position];
+                        if (valueToken.TokenType == Token.Type.Number)
+                        {
+                            int value;
+                            if (int.TryParse(valueToken.Value, out value))
+                            {
+                                _variables[wordToken.Value] = value;
+                                Console.WriteLine($"Variable {wordToken.Value} assigned the value {value}");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Error: Invalid number value '{valueToken.Value}'");
+                            }
+                            _position++;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error: Expected number after '='.");
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                }
+
+            }
+            else
+            {
+
             }
         }
 
@@ -101,7 +151,7 @@ namespace Nexo
                                             }
                                         }
                                     }
-                                    
+
                                 }
                                 else if (n1.TokenType == Token.Type.Number && n2.TokenType == Token.Type.Number &&
                                     sym.TokenType == Token.Type.Symbol && sym.Value == "<" && value < value2)
@@ -137,7 +187,7 @@ namespace Nexo
                                         {
                                             Token currentToken = _tokens[_position];
                                             if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "print")
-                                            {                                                
+                                            {
                                                 Print();
                                             }
                                             else if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "let")
@@ -149,28 +199,28 @@ namespace Nexo
                                 }
                                 else
                                 {
-                                    
+
                                 }
                             }
                             else
                             {
-                                Console.WriteLine("Error: Second token is not a number"); 
+                                Console.WriteLine("Error: Second token is not a number");
                             }
                         }
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Error: First token is not a number"); 
+                    Console.WriteLine("Error: First token is not a number");
                 }
             }
             else
             {
-                Console.WriteLine("Error: Not enough tokens to check condition."); 
+                Console.WriteLine("Error: Not enough tokens to check condition.");
             }
         }
 
-        
+
 
 
         private void Comment()
@@ -188,31 +238,34 @@ namespace Nexo
 
             if (_position < _tokens.Count)
             {
-                
-                Token nextToken = _tokens[_position];
 
-                if (_variables.ContainsKey(nextToken.Value))
+                Token nextToken = _tokens[_position];
+                if (nextToken.TokenType == Token.Type.Symbol && nextToken.Value == "'")
                 {
-                    Console.WriteLine(_variables[nextToken.Value]);
+                    _position++;
+                    Token nextToken2 = _tokens[_position];
+                    if (_position < _tokens.Count)
+                    {
+                        while (_tokens[_position].Value != "'")
+                        {
+                            Console.Write(nextToken2.Value + " ");
+                            _position++;
+
+                            if (_position < _tokens.Count)
+                                nextToken2 = _tokens[_position];
+                        }
+
+                        Console.WriteLine();
+                    }
                 }
                 else
                 {
-                    while (_position < _tokens.Count)
-                    {
-                        Console.Write(nextToken.Value + " ");
-                        _position++;
-
-                        if (_position < _tokens.Count)
-                            nextToken = _tokens[_position];
-                    }
+                    Console.WriteLine("Error: no ' sign");
                 }
 
-                Console.WriteLine();
+
             }
-            else
-            {
-              
-            }
+
         }
 
 
@@ -279,7 +332,7 @@ namespace Nexo
                         }
                         else
                         {
-                            
+
                         }
                     }
                     else
@@ -289,64 +342,16 @@ namespace Nexo
                 }
                 else
                 {
-                    
+
                 }
             }
             else
             {
-               
+
             }
         }
 
-        private void ParseAssignmentOrUseStatement()
-        {
-            _position++;
-            Token wordToken = _tokens[_position];
-            _position++;
-
-            if (_position < _tokens.Count)
-            {
-                Token nextToken = _tokens[_position];
-
-                if (nextToken.TokenType == Token.Type.Symbol && nextToken.Value == "=")
-                {
-
-                    _position++;
-
-                    if (_position < _tokens.Count)
-                    {
-                        Token valueToken = _tokens[_position];
-                        if (valueToken.TokenType == Token.Type.Number)
-                        {
-                            int value;
-                            if (int.TryParse(valueToken.Value, out value))
-                            {
-                                _variables[wordToken.Value] = value;
-                                Console.WriteLine($"Variable {wordToken.Value} assigned the value {value}");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Error: Invalid number value '{valueToken.Value}'");
-                            }
-                            _position++;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Error: Expected number after '='.");
-                        }
-                    }
-                    else
-                    {
-                       
-                    }
-                }
-
-            }
-            else
-            {
-                
-            }
-        }
+        
     }
 
 }
