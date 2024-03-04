@@ -56,7 +56,6 @@ namespace Nexo
             }
             else
             {
-
                 _position++;
             }
         }
@@ -100,6 +99,7 @@ namespace Nexo
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("Error: Expected number after '='.");
                             Console.ResetColor();
+                            _position++;
                         }
                     }
                     
@@ -197,7 +197,7 @@ namespace Nexo
                                 }
                                 else
                                 {
-
+                                    Console.WriteLine(false);
                                 }
                             }
                             else
@@ -205,6 +205,7 @@ namespace Nexo
                                 Console.ForegroundColor = ConsoleColor.Red;
                                 Console.WriteLine("Error: Second token is not a number");
                                 Console.ResetColor();
+                                _position++;
                             }
                         }
                     }
@@ -214,6 +215,7 @@ namespace Nexo
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Error: First token is not a number");
                     Console.ResetColor();
+                    _position++;
                 }
             }
             else
@@ -221,6 +223,7 @@ namespace Nexo
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Error: Not enough tokens to check condition.");
                 Console.ResetColor();
+                _position++;
             }
         }
 
@@ -267,6 +270,7 @@ namespace Nexo
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Error: no ' sign");
                     Console.ResetColor();
+                    _position++;
                 }
 
 
@@ -323,7 +327,7 @@ namespace Nexo
                                     Console.ForegroundColor = ConsoleColor.Red;
                                     Console.WriteLine("Error: Division by zero.");
                                     Console.ResetColor();
-                                    return;
+                                    
                                 }
                             }
                             else if (operatorToken.Value == "^")
@@ -335,7 +339,7 @@ namespace Nexo
                                 Console.ForegroundColor = ConsoleColor.Red;
                                 Console.WriteLine("Error: Invalid operator.");
                                 Console.ResetColor();
-                                return;
+                                
                             }
 
                             Console.WriteLine($"Result: {result}");
