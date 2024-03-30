@@ -4,26 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Nexo
+namespace Nexo2
 {
     public class Token
     {
-        public enum Type
+        public TokenType Type { get; }
+        public string Lexeme { get; }
+        public object Literal { get; }
+
+        public Token(TokenType type, string lexeme, object literal)
         {
-            Word,
-            Number,
-            Symbol
+            Type = type;
+            Lexeme = lexeme;
+            Literal = literal;
         }
-
-        public Type TokenType { get; }
-        public string Value { get; }
-
-        public Token(Type tokenType, string value)
-        {
-            TokenType = tokenType;
-            Value = value;
-        }
-
-
     }
 }
