@@ -1,39 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Nexo
+
+namespace Nexo2
 {
-    class Program
+    public enum TokenType
     {
-        static void Main(string[] args)
+        Print,
+        If,
+        Else,
+        Identifier,
+        Number,
+        Plus,
+        Minus,
+        Multiply,
+        Divide,
+        Equal,
+        LessThan,
+        GreaterThan,
+        LeftParen,
+        RightParen,
+        LeftBrace,
+        RightBrace,
+        SemiColon
+    }
+
+    public interface IExpressionVisitor<T>
+    {
+        T VisitBinaryExpression(BinaryExpression expr);
+        T VisitLiteralExpression(LiteralExpression expr);
+    }
+
+    public interface IExpression
+    {
+        T Accept<T>(IExpressionVisitor<T> visitor);
+    }
+    
+    public class MainF
+    {
+        public static void Main(string[] args)
         {
             while (true)
             {
-                Console.Write(">");
-
-                string input = Console.ReadLine();
-
-                Lexer lexer = new Lexer(input);
-                List<Token> tokens = new List<Token>();
-
-                Token token;
-                while ((token = lexer.GetNextToken()) != null)
-                {
-                    tokens.Add(token);
-                }
-
-
+                string source = Console.ReadLine();
+                Lexer lexer = new Lexer(source);
+                List<Token> tokens = lexer.ScanTokens();
 
                 Parser parser = new Parser(tokens);
                 parser.Parse();
-
-                if (input == "break")
-                {
-                    Console.WriteLine("The program has ended");
-                    break;
-                }
             }
-            
+
         }
     }
 
