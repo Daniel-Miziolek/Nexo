@@ -4,24 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Nexo
+namespace Nexo2
 {
     public class Parser
     {
         private readonly List<Token> _tokens;
-        private int _position;
-        private Dictionary<string, int> _variables;
+        private int _current = 0;
 
         public Parser(List<Token> tokens)
         {
             _tokens = tokens;
-            _position = 0;
-            _variables = new Dictionary<string, int>();
         }
 
         public void Parse()
         {
-            while (_position < _tokens.Count)
+            while (!IsAtEnd())
             {
                 ParseStatement();
             }
@@ -29,337 +26,128 @@ namespace Nexo
 
         private void ParseStatement()
         {
-            Token currentToken = _tokens[_position];
+            Token currentToken = Advance();
 
-            if (currentToken.TokenType == Token.Type.Word)
+            switch (currentToken.Type)
             {
-                if (currentToken.Value == "print")
-                {
-                    Print();
-                }
-                else if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "if")
-                {
-                    Conditions();
-                }
-                else if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "let")
-                {
-                    ParseAssignmentOrUseStatement();
-                }
+                case TokenType.Print:
+                    ParsePrintStatement();
+                    break;
+                case TokenType.If:
+                    ParseIfStatement();
+                    break;
             }
-            else if (currentToken.TokenType == Token.Type.Number)
+        }
+
+        private void ParsePrintStatement()
+        {
+            IExpression expression = ParseExpression();
+
+            Console.WriteLine((int)expression.Accept(new Interpreter()));
+        }
+
+        private void ParseIfStatement()
+        {
+            IExpression condition = ParseExpression();
+            if ((bool)condition.Accept(new Interpreter()))
             {
-                MathematicalOperations();
-            }
-            else if (currentToken.TokenType == Token.Type.Symbol && currentToken.Value == "#")
-            {
-                Comment();
+                ParseStatement();
             }
             else
             {
-                _position++;
+                while (Peek().Type != TokenType.Else && Peek().Type != TokenType.SemiColon && !IsAtEnd())
+                {
+                    Advance();
+                }
+
+                if (Peek().Type == TokenType.Else)
+                {
+                    Advance(); // Consume 'else'
+                    ParseStatement();
+                }
             }
         }
 
-        private void ParseAssignmentOrUseStatement()
+        private IExpression ParseExpression()
         {
-            _position++;
-            Token wordToken = _tokens[_position];
-            _position++;
-
-            if (_position < _tokens.Count)
-            {
-                Token nextToken = _tokens[_position];
-
-                if (nextToken.TokenType == Token.Type.Symbol && nextToken.Value == "=")
-                {
-
-                    _position++;
-
-                    if (_position < _tokens.Count)
-                    {
-                        Token valueToken = _tokens[_position];
-                        if (valueToken.TokenType == Token.Type.Number)
-                        {
-                            int value;
-                            if (int.TryParse(valueToken.Value, out value))
-                            {
-                                _variables[wordToken.Value] = value;
-                                Console.WriteLine($"Variable {wordToken.Value} assigned the value {value}");
-                            }
-                            else
-                            {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine($"Error: Invalid number value '{valueToken.Value}'");
-                                Console.ResetColor();
-                            }
-                            _position++;
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("Error: Expected number after '='.");
-                            Console.ResetColor();
-                            _position++;
-                        }
-                    }
-                    
-                }
-
-            }
-            
+            return ParseBinaryExpression();
         }
 
-        private void Conditions()
+        private IExpression ParseBinaryExpression()
         {
-            _position++;
+            IExpression left = ParsePrimary();
 
-            if (_position < _tokens.Count)
+            while (IsBinaryOperator(Peek().Type))
             {
-                Token n1 = _tokens[_position];
-                if (int.TryParse(n1.Value, out int value))
-                {
-                    _position++;
-                    if (_position < _tokens.Count)
-                    {
-                        Token sym = _tokens[_position];
-                        _position++;
-                        if (_position < _tokens.Count)
-                        {
-                            Token n2 = _tokens[_position];
-                            if (int.TryParse(n2.Value, out int value2))
-                            {
-                                if (n1.TokenType == Token.Type.Number && n2.TokenType == Token.Type.Number &&
-                                    sym.TokenType == Token.Type.Symbol && sym.Value == ">" && value > value2)
-                                {
-                                    _position++;
-                                    Token klamra = _tokens[_position];
-                                    if (klamra.Value == "{")
-                                    {
-                                        _position++;
-                                        if (_position < _tokens.Count)
-                                        {
-                                            Token currentToken = _tokens[_position];
-                                            if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "print")
-                                            {
-                                                Print();
-                                            }
-                                            else if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "let")
-                                            {
-                                                ParseAssignmentOrUseStatement();
-                                            }
-                                        }
-                                    }
+                Token op = Advance();
+                IExpression right = ParsePrimary();
+                left = new BinaryExpression(left, op, right);
+            }
 
-                                }
-                                else if (n1.TokenType == Token.Type.Number && n2.TokenType == Token.Type.Number &&
-                                    sym.TokenType == Token.Type.Symbol && sym.Value == "<" && value < value2)
-                                {
-                                    _position++;
-                                    Token klamra = _tokens[_position];
-                                    if (klamra.Value == "{")
-                                    {
-                                        _position++;
-                                        if (_position < _tokens.Count)
-                                        {
-                                            Token currentToken = _tokens[_position];
-                                            if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "print")
-                                            {
-                                                Print();
-                                            }
-                                            else if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "let")
-                                            {
-                                                ParseAssignmentOrUseStatement();
-                                            }
-                                        }
-                                    }
-                                }
-                                else if (n1.TokenType == Token.Type.Number && n2.TokenType == Token.Type.Number &&
-                                    sym.TokenType == Token.Type.Symbol && sym.Value == "=" && value == value2)
-                                {
-                                    _position++;
-                                    Token klamra = _tokens[_position];
-                                    if (klamra.Value == "{")
-                                    {
-                                        _position++;
-                                        if (_position < _tokens.Count)
-                                        {
-                                            Token currentToken = _tokens[_position];
-                                            if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "print")
-                                            {
-                                                Print();
-                                            }
-                                            else if (currentToken.TokenType == Token.Type.Word && currentToken.Value == "let")
-                                            {
-                                                ParseAssignmentOrUseStatement();
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    Console.WriteLine(false);
-                                }
-                            }
-                            else
-                            {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("Error: Second token is not a number");
-                                Console.ResetColor();
-                                _position++;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Error: First token is not a number");
-                    Console.ResetColor();
-                    _position++;
-                }
+            return left;
+        }
+
+        private IExpression ParsePrimary()
+        {
+            Token currentToken = Advance();
+            if (currentToken.Type == TokenType.Number)
+            {
+                return new LiteralExpression(currentToken.Literal);
+            }
+            else if (currentToken.Type == TokenType.LeftParen)
+            {
+                IExpression expression = ParseExpression();
+                Consume(TokenType.RightParen, "Expected ')' after expression.");
+                return expression;
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Error: Not enough tokens to check condition.");
-                Console.ResetColor();
-                _position++;
+                throw new Exception($"Unexpected token '{currentToken.Lexeme}'.");
             }
         }
 
-
-
-
-        private void Comment()
+        private Token Advance()
         {
-            while (_position < _tokens.Count && !_tokens[_position].Value.Contains("\n"))
+            if (!IsAtEnd())
             {
-                _position++;
+                _current++;
+            }
+            return _tokens[_current - 1];
+        }
+
+        private Token Peek()
+        {
+            if (IsAtEnd())
+            {
+                return _tokens[_tokens.Count - 1];
+            }
+            return _tokens[_current];
+        }
+
+        private bool IsAtEnd()
+        {
+            return _current >= _tokens.Count;
+        }
+
+        private bool IsBinaryOperator(TokenType type)
+        {
+            return type == TokenType.Plus || type == TokenType.Minus ||
+                   type == TokenType.Multiply || type == TokenType.Divide ||
+                   type == TokenType.Equal || type == TokenType.LessThan ||
+                   type == TokenType.GreaterThan;
+        }
+
+        private void Consume(TokenType type, string message)
+        {
+            if (Peek().Type == type)
+            {
+                Advance();
+            }
+            else
+            {
+                throw new Exception(message);
             }
         }
-
-
-        private void Print()
-        {
-            _position++;
-
-            if (_position < _tokens.Count)
-            {
-
-                Token nextToken = _tokens[_position];
-                if (nextToken.TokenType == Token.Type.Symbol && nextToken.Value == "'")
-                {
-                    _position++;
-                    Token nextToken2 = _tokens[_position];
-                    if (_position < _tokens.Count)
-                    {
-                        while (_tokens[_position].Value != "'")
-                        {
-                            Console.Write(nextToken2.Value + " ");
-                            _position++;
-
-                            if (_position < _tokens.Count)
-                                nextToken2 = _tokens[_position];
-                        }
-
-                        Console.WriteLine();
-                    }
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Error: no ' sign");
-                    Console.ResetColor();
-                    _position++;
-                }
-
-
-            }
-
-        }
-
-
-
-
-
-
-        private void MathematicalOperations()
-        {
-            Token numberToken = _tokens[_position];
-            _position++;
-
-            if (_position < _tokens.Count)
-            {
-                Token operatorToken = _tokens[_position];
-                _position++;
-
-                if (_position < _tokens.Count)
-                {
-                    Token secondNumberToken = _tokens[_position];
-                    _position++;
-
-                    if (operatorToken.TokenType == Token.Type.Symbol)
-                    {
-                        double firstValue, secondValue;
-                        if (Double.TryParse(numberToken.Value, out firstValue) && Double.TryParse(secondNumberToken.Value, out secondValue))
-                        {
-                            double result = 0;
-                            if (operatorToken.Value == "+")
-                            {
-                                result = firstValue + secondValue;
-                            }
-                            else if (operatorToken.Value == "-")
-                            {
-                                result = firstValue - secondValue;
-                            }
-                            else if (operatorToken.Value == "*")
-                            {
-                                result = firstValue * secondValue;
-                            }
-                            else if (operatorToken.Value == "/")
-                            {
-                                if (secondValue != 0)
-                                {
-                                    result = firstValue / secondValue;
-                                }
-                                else
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.WriteLine("Error: Division by zero.");
-                                    Console.ResetColor();
-                                    
-                                }
-                            }
-                            else if (operatorToken.Value == "^")
-                            {
-                                result = Math.Pow(firstValue, secondValue);
-                            }
-                            else
-                            {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("Error: Invalid operator.");
-                                Console.ResetColor();
-                                
-                            }
-
-                            Console.WriteLine($"Result: {result}");
-                        }
-                        else
-                        {
-
-                        }
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Error: Expected operator after the number.");
-                        Console.ResetColor();
-                    }
-                }               
-            }            
-        }
-
-        
     }
 
 }
