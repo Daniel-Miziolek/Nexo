@@ -4,19 +4,14 @@ A simple console programming languege
 
 ## Description
 
-This C# program allows you to create variables, print out, do some mathematical operations like addition, substraction, multiplication, division, exponentiation.
+This C# program allows you to create variables, print out, do some mathematical operations.
 
 ## Examples
 
-    >let x = 5
-    Variable x assigned the value 5
-    >3 ^ 2
-    Result: 9
-    >print 'Hello World'
-    Hello World
-    ># Nexo
-    > if 5 > 3 { print 'True' }
-    True
+    >print 5 + 2 * 3;
+    11
+    > if (5 > 3) print 5; else print 10;
+    5
 
   
    
