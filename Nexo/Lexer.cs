@@ -81,6 +81,12 @@ namespace Nexo2
                 case '\n':
                     _line++;
                     break;
+                case '#':
+                    while (Peek() != '\n' && !IsAtEnd())
+                    {
+                        Advance();
+                    }
+                break;
                 default:
                     if (char.IsDigit(c))
                     {
@@ -121,6 +127,7 @@ namespace Nexo2
             if (text == "print") type = TokenType.Print;
             else if (text == "if") type = TokenType.If;
             else if (text == "else") type = TokenType.Else;
+            else if (text == "#") type = TokenType.Comment;
 
             _tokens.Add(new Token(type, text, null));
         }

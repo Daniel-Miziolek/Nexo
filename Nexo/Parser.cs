@@ -39,10 +39,13 @@ namespace Nexo2
             }
         }
 
+     
+
+
+
         private void ParsePrintStatement()
         {
             IExpression expression = ParseExpression();
-
             Console.WriteLine((int)expression.Accept(new Interpreter()));
         }
 
