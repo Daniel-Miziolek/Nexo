@@ -10,6 +10,7 @@ namespace Nexo2
     {
         private readonly List<Token> _tokens;
         private int _current = 0;
+        static Dictionary<string, int> varaibles = new Dictionary<string, int>();
 
         public Parser(List<Token> tokens)
         {
@@ -36,17 +37,58 @@ namespace Nexo2
                 case TokenType.If:
                     ParseIfStatement();
                     break;
+                case TokenType.Variables:
+                    ParseVariableDeclaration();
+                    break;
+
             }
+
         }
 
-     
+        private void ParseVariableDeclaration()
+        {
+           
+            Token varNameToken = Advance();
+            if (varNameToken.Type != TokenType.Identifier)
+            {
+                throw new Exception("Expected variable name after 'var'.");
+            }
+            string varName = varNameToken.Lexeme;
+
+           
+            if (varaibles.ContainsKey(varName))
+            {
+                throw new Exception($"Variable '{varName}' is already declared.");
+            }
+
+            Consume(TokenType.Equal, "Expected '=' after variable declaration.");
+
+         
+            IExpression value = ParseExpression();
+
+          
+            varaibles.Add(varName, (int)value.Accept(new Interpreter()));
+            Console.WriteLine($"Variable '{varName}' has assigned value {(int)value.Accept(new Interpreter())}.");
+
+            Consume(TokenType.SemiColon, "Expected ';' after variable declaration.");
+        }
+
 
 
 
         private void ParsePrintStatement()
         {
-            IExpression expression = ParseExpression();
-            Console.WriteLine((int)expression.Accept(new Interpreter()));
+            Token nextToken = Peek();
+            if (varaibles.ContainsKey(nextToken.Lexeme))
+            {
+                Console.WriteLine(varaibles[nextToken.Lexeme]);
+            }
+            else
+            {
+                IExpression expression = ParseExpression();
+                Console.WriteLine((int)expression.Accept(new Interpreter()));
+            }
+            
         }
 
         private void ParseIfStatement()

@@ -10,6 +10,7 @@ namespace Nexo2
         If,
         Else,
         Comment,
+        Variables,
         Name,
         Value,
         Identifier,

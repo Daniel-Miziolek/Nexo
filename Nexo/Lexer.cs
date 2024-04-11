@@ -127,6 +127,7 @@ namespace Nexo2
             if (text == "print") type = TokenType.Print;
             else if (text == "if") type = TokenType.If;
             else if (text == "else") type = TokenType.Else;
+            else if (text == "let") type = TokenType.Variables;
             else if (text == "#") type = TokenType.Comment;
 
             _tokens.Add(new Token(type, text, null));
