@@ -63,12 +63,12 @@ namespace Nexo2
 
             Consume(TokenType.Equal, "Expected '=' after variable declaration.");
 
-         
-            IExpression value = ParseExpression();
 
-          
-            varaibles.Add(varName, (int)value.Accept(new Interpreter()));
-            Console.WriteLine($"Variable '{varName}' has assigned value {(int)value.Accept(new Interpreter())}.");
+            IExpression expression = ParseExpression();
+
+
+            varaibles.Add(varName, (int)expression.Accept(new Interpreter()));
+            Console.WriteLine($"Variable '{varName}' has assigned value {(int)expression.Accept(new Interpreter())}.");
 
             Consume(TokenType.SemiColon, "Expected ';' after variable declaration.");
         }
