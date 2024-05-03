@@ -40,7 +40,11 @@ namespace Nexo2
                 case TokenType.Variables:
                     ParseVariableDeclaration();
                     break;
-
+                case TokenType.Comment:
+                    break;
+                default:
+                    Console.WriteLine("Unknow command" + currentToken.Type);
+                    break;
             }
 
         }
@@ -51,7 +55,7 @@ namespace Nexo2
             Token varNameToken = Advance();
             if (varNameToken.Type != TokenType.Identifier)
             {
-                throw new Exception("Expected variable name after 'var'.");
+                throw new Exception("Expected variable name after 'let'.");
             }
             string varName = varNameToken.Lexeme;
 
@@ -74,7 +78,7 @@ namespace Nexo2
         }
 
 
-
+        
 
         private void ParsePrintStatement()
         {
@@ -88,7 +92,9 @@ namespace Nexo2
                 IExpression expression = ParseExpression();
                 Console.WriteLine((int)expression.Accept(new Interpreter()));
             }
-            
+
+            Consume(TokenType.SemiColon, "Expected ';' after variable declaration.");
+
         }
 
         private void ParseIfStatement()
@@ -111,6 +117,7 @@ namespace Nexo2
                     ParseStatement();
                 }
             }
+            Consume(TokenType.SemiColon, "Expected ';' after variable declaration.");
         }
 
         private IExpression ParseExpression()
