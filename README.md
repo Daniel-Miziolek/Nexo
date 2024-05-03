@@ -2,9 +2,6 @@
 
 A simple console programming languege
 
-## Description
-
-This C# program allows you to create variables, print out, do some mathematical operations.
 
 ## Examples
 
