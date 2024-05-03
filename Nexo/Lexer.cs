@@ -25,10 +25,10 @@ namespace Nexo2
             while (!IsAtEnd())
             {
                 _start = _current;
-                ScanToken();
+                ScanToken(); 
             }
 
-            _tokens.Add(new Token(TokenType.SemiColon, "", null));
+         
             return _tokens;
         }
 
@@ -86,7 +86,7 @@ namespace Nexo2
                     {
                         Advance();
                     }
-                break;
+                    break;
                 default:
                     if (char.IsDigit(c))
                     {
