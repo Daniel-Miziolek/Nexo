@@ -17,6 +17,7 @@ namespace Nexo2
         Number,
         Plus,
         Minus,
+        ChValueOfVar,
         Multiply,
         Divide,
         Equal,
