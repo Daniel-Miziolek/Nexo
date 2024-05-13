@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace Nexo2
     {
         private readonly List<Token> _tokens;
         private int _current = 0;
-        static Dictionary<string, int> varaibles = new Dictionary<string, int>();
+        public static Dictionary<string, int> varaibles = new Dictionary<string, int>();   
 
         public Parser(List<Token> tokens)
         {
@@ -42,11 +43,23 @@ namespace Nexo2
                     break;
                 case TokenType.Comment:
                     break;
+                case TokenType.ChValueOfVar:
+                    ChangeValueOfVariable(currentToken.Lexeme);
+                    Advance();
+                    break;
                 default:
                     Console.WriteLine("Unknow command" + currentToken.Type);
                     break;
             }
 
+        }
+
+        private void ChangeValueOfVariable(string name)
+        {
+            Advance();
+            IExpression expression = ParseExpression();
+            varaibles[name] = (int)expression.Accept(new Interpreter());
+            Console.WriteLine(varaibles[name]);
         }
 
         private void ParseVariableDeclaration()
@@ -86,14 +99,15 @@ namespace Nexo2
             if (varaibles.ContainsKey(nextToken.Lexeme))
             {
                 Console.WriteLine(varaibles[nextToken.Lexeme]);
+                Advance();
             }
             else
             {
-                IExpression expression = ParseExpression();
+                IExpression expression = ParseExpression(); 
                 Console.WriteLine((int)expression.Accept(new Interpreter()));
             }
 
-            Consume(TokenType.SemiColon, "Expected ';' after variable declaration.");
+            Consume(TokenType.SemiColon, "Expected ';' after print statment.");
 
         }
 
@@ -154,8 +168,12 @@ namespace Nexo2
             }
             else
             {
-                throw new Exception($"Unexpected token '{currentToken.Lexeme}'.");
+                throw new Exception($"Unexpected token '.");
             }
+
+           
+
+
         }
 
         private Token Advance()

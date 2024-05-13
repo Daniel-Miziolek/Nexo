@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -128,6 +129,7 @@ namespace Nexo2
             else if (text == "if") type = TokenType.If;
             else if (text == "else") type = TokenType.Else;
             else if (text == "let") type = TokenType.Variables;
+            else if (Parser.varaibles.ContainsKey(text)) type = TokenType.ChValueOfVar;
             else if (text == "#") type = TokenType.Comment;
 
             _tokens.Add(new Token(type, text, null));
