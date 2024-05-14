@@ -101,10 +101,15 @@ namespace Nexo2
                 Console.WriteLine(varaibles[nextToken.Lexeme]);
                 Advance();
             }
+            else if (nextToken.Type != TokenType.Identifier)
+            {
+                IExpression expression = ParseExpression();
+                Console.WriteLine(expression.Accept(new Interpreter()));
+            }
             else
             {
-                IExpression expression = ParseExpression(); 
-                Console.WriteLine((int)expression.Accept(new Interpreter()));
+                Console.WriteLine(nextToken.Lexeme);
+                Advance();
             }
 
             Consume(TokenType.SemiColon, "Expected ';' after print statment.");
