@@ -47,6 +47,7 @@ namespace Nexo2
         {
             while (true)
             {
+                Console.Write("> ");
                 string source = Console.ReadLine();
                 Lexer lexer = new Lexer(source);
                 List<Token> tokens = lexer.ScanTokens();
