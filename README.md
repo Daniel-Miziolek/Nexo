@@ -11,8 +11,8 @@ A simple console programming languege
     Variable 'x' has assigned value 5
     >print x;
     5
-    > if (5 > 3) print 5; else print 10;
-    5
+    > if (2 > 3) print 5; else if (5 > 3) print 10;
+    10
 
   
    
