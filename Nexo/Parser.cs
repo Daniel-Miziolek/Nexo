@@ -11,7 +11,7 @@ namespace Nexo2
     {
         private readonly List<Token> _tokens;
         private int _current = 0;
-        public static Dictionary<string, int> varaibles = new Dictionary<string, int>();   
+        public static Dictionary<string, int> varaibles = new Dictionary<string, int>();
 
         public Parser(List<Token> tokens)
         {
@@ -47,9 +47,10 @@ namespace Nexo2
                     ChangeValueOfVariable(currentToken.Lexeme);
                     Advance();
                     break;
-                
+                default:
+                    PrintError($"Unknow command -> {currentToken.Lexeme}");
+                    break;
             }
-
         }
 
         private void ChangeValueOfVariable(string name)
@@ -62,34 +63,34 @@ namespace Nexo2
 
         private void ParseVariableDeclaration()
         {
-           
             Token varNameToken = Advance();
             if (varNameToken.Type != TokenType.Identifier)
             {
-                throw new Exception("Expected variable name after 'let'.");
+                PrintError("Expected variable name after 'let'.");
+                return;
             }
             string varName = varNameToken.Lexeme;
 
-           
             if (varaibles.ContainsKey(varName))
             {
-                throw new Exception($"Variable '{varName}' is already declared.");
+                PrintError($"Variable '{varName}' is already declared.");
+                return;
             }
 
-            Consume(TokenType.Equal, "Expected '=' after variable declaration.");
-
+            if (!Consume(TokenType.Equal, "Expected '=' after variable declaration."))
+            {
+                return;
+            }
 
             IExpression expression = ParseExpression();
-
-
             varaibles.Add(varName, (int)expression.Accept(new Interpreter()));
             Console.WriteLine($"Variable '{varName}' has assigned value {(int)expression.Accept(new Interpreter())}.");
 
-            Consume(TokenType.SemiColon, "Expected ';' after variable declaration.");
+            if (!Consume(TokenType.SemiColon, "Expected ';' after variable declaration."))
+            {
+                return;
+            }
         }
-
-
-        
 
         private void ParsePrintStatement()
         {
@@ -110,8 +111,10 @@ namespace Nexo2
                 Advance();
             }
 
-            Consume(TokenType.SemiColon, "Expected ';' after print statment.");
-
+            if (!Consume(TokenType.SemiColon, "Expected ';' after print statement."))
+            {
+                return;
+            }
         }
 
         private void ParseIfStatement()
@@ -142,9 +145,7 @@ namespace Nexo2
                         ParseStatement();
                     }
                 }
-                
             }
-            
         }
 
         private IExpression ParseExpression()
@@ -176,17 +177,17 @@ namespace Nexo2
             else if (currentToken.Type == TokenType.LeftParen)
             {
                 IExpression expression = ParseExpression();
-                Consume(TokenType.RightParen, "Expected ')' after expression.");
+                if (!Consume(TokenType.RightParen, "Expected ')' after expression."))
+                {
+                    return null;
+                }
                 return expression;
             }
             else
             {
-                throw new Exception($"Unexpected token '.");
+                PrintError($"Unexpected token '{currentToken.Lexeme}'.");
+                return null;
             }
-
-           
-
-
         }
 
         private Token Advance()
@@ -220,17 +221,25 @@ namespace Nexo2
                    type == TokenType.GreaterThan;
         }
 
-        private void Consume(TokenType type, string message)
+        private bool Consume(TokenType type, string message)
         {
             if (Peek().Type == type)
             {
                 Advance();
+                return true;
             }
             else
             {
-                throw new Exception(message);
+                PrintError(message);
+                return false;
             }
         }
-    }
 
+        private void PrintError(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ResetColor();
+        }
+    }
 }
