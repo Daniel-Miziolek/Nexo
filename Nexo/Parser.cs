@@ -144,7 +144,7 @@ namespace Nexo2
                 }
                 
             }
-            Consume(TokenType.SemiColon, "Expected ';' after variable declaration.");
+            
         }
 
         private IExpression ParseExpression()
