@@ -47,9 +47,7 @@ namespace Nexo2
                     ChangeValueOfVariable(currentToken.Lexeme);
                     Advance();
                     break;
-                default:
-                    Console.WriteLine("Unknow command" + currentToken.Type);
-                    break;
+                
             }
 
         }
@@ -135,6 +133,16 @@ namespace Nexo2
                     Advance(); // Consume 'else'
                     ParseStatement();
                 }
+                else if (Peek().Type == TokenType.ElseIf)
+                {
+                    IExpression condition2 = ParseExpression();
+                    if ((bool)condition2.Accept(new Interpreter()))
+                    {
+                        Advance();
+                        ParseStatement();
+                    }
+                }
+                
             }
             Consume(TokenType.SemiColon, "Expected ';' after variable declaration.");
         }

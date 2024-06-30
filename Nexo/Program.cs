@@ -9,6 +9,7 @@ namespace Nexo2
         Print,
         If,
         Else,
+        ElseIf,
         Comment,
         Variables,
         Name,
