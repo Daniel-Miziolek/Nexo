@@ -41,7 +41,13 @@ namespace Nexo2
                 case TokenType.Variables:
                     ParseVariableDeclaration();
                     break;
+                case TokenType.Else:
+                    break;
+                case TokenType.ElseIf:
+                    break;
                 case TokenType.Comment:
+                    break;
+                case TokenType.SemiColon: 
                     break;
                 case TokenType.ChValueOfVar:
                     ChangeValueOfVariable(currentToken.Lexeme);
