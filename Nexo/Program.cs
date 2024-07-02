@@ -14,6 +14,7 @@ namespace Nexo2
         Variables,
         Name,
         Value,
+        String,
         Identifier,
         Number,
         Plus,

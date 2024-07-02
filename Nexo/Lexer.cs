@@ -50,6 +50,9 @@ namespace Nexo2
                 case '}':
                     AddToken(TokenType.RightBrace);
                     break;
+                case '"':
+                    ScanString();
+                    break;
                 case '+':
                     AddToken(TokenType.Plus);
                     break;
@@ -99,10 +102,34 @@ namespace Nexo2
                     }
                     else
                     {
-                        throw new Exception($"Unexpected character '{c}' at line {_line}.");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Unexpected character '{c}' at line {_line}.");
+                        Console.ResetColor();                    
                     }
                     break;
             }
+        }
+
+        private void ScanString()
+        {
+            while (Peek() != '"' && !IsAtEnd())
+            {
+                if (Peek() == '\n') _line++;
+                Advance();
+            }
+
+
+            if (IsAtEnd())
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Unterminated string.");
+                Console.ResetColor();
+            }
+
+
+            Advance();
+            string value = _source.Substring(_start + 1, _current - _start - 2);
+            AddToken(TokenType.String, value);
         }
 
         private void ScanNumber()
@@ -153,10 +180,10 @@ namespace Nexo2
             return _source[_current];
         }
 
-        private void AddToken(TokenType type)
+        private void AddToken(TokenType type, object literal = null)
         {
             string text = _source.Substring(_start, _current - _start);
-            _tokens.Add(new Token(type, text, null));
+            _tokens.Add(new Token(type, text, literal));
         }
     }
 }

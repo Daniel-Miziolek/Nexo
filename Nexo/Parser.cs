@@ -1,251 +1,272 @@
-﻿using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Nexo2;
 
-namespace Nexo2
+public class Parser
 {
-    public class Parser
+    private readonly List<Token> _tokens;
+    private int _current = 0;
+    public static Dictionary<string, Variable> varaibles = new Dictionary<string, Variable>();
+
+    public Parser(List<Token> tokens)
     {
-        private readonly List<Token> _tokens;
-        private int _current = 0;
-        public static Dictionary<string, int> varaibles = new Dictionary<string, int>();
+        _tokens = tokens;
+    }
 
-        public Parser(List<Token> tokens)
+    public void Parse()
+    {
+        while (!IsAtEnd())
         {
-            _tokens = tokens;
+            ParseStatement();
         }
+    }
 
-        public void Parse()
+    private void ParseStatement()
+    {
+        Token currentToken = Advance();
+
+        switch (currentToken.Type)
         {
-            while (!IsAtEnd())
-            {
-                ParseStatement();
-            }
+            case TokenType.Print:
+                ParsePrintStatement();
+                break;
+            case TokenType.If:
+                ParseIfStatement();
+                break;
+            case TokenType.Variables:
+                ParseVariableDeclaration();
+                break;
+            case TokenType.Else:
+                break;
+            case TokenType.ElseIf:
+                break;
+            case TokenType.Comment:
+                break;
+            case TokenType.SemiColon:
+                break;
+            case TokenType.ChValueOfVar:
+                ChangeValueOfVariable(currentToken.Lexeme);
+                Advance();
+                break;
+            default:
+                PrintError($"Unknow command -> {currentToken.Lexeme}");
+                break;
         }
+    }
 
-        private void ParseStatement()
+    private void ChangeValueOfVariable(string name)
+    {
+        Advance();
+        Token nextToken = Peek();
+        if (nextToken.Type == TokenType.String)
         {
-            Token currentToken = Advance();
-
-            switch (currentToken.Type)
-            {
-                case TokenType.Print:
-                    ParsePrintStatement();
-                    break;
-                case TokenType.If:
-                    ParseIfStatement();
-                    break;
-                case TokenType.Variables:
-                    ParseVariableDeclaration();
-                    break;
-                case TokenType.Else:
-                    break;
-                case TokenType.ElseIf:
-                    break;
-                case TokenType.Comment:
-                    break;
-                case TokenType.SemiColon: 
-                    break;
-                case TokenType.ChValueOfVar:
-                    ChangeValueOfVariable(currentToken.Lexeme);
-                    Advance();
-                    break;
-                default:
-                    PrintError($"Unknow command -> {currentToken.Lexeme}");
-                    break;
-            }
-        }
-
-        private void ChangeValueOfVariable(string name)
-        {
+            varaibles[name] = new Variable(nextToken.Lexeme);
             Advance();
+        }
+        else
+        {
             IExpression expression = ParseExpression();
-            varaibles[name] = (int)expression.Accept(new Interpreter());
-            Console.WriteLine(varaibles[name]);
+            varaibles[name] = new Variable((int)expression.Accept(new Interpreter()));
+            Console.WriteLine(varaibles[name].Value);
         }
 
-        private void ParseVariableDeclaration()
+        if (!Consume(TokenType.SemiColon, "Expected ';' after variable declaration."))
         {
-            Token varNameToken = Advance();
-            if (varNameToken.Type != TokenType.Identifier)
-            {
-                PrintError("Expected variable name after 'let'.");
-                return;
-            }
-            string varName = varNameToken.Lexeme;
+            return;
+        }
+    }
 
-            if (varaibles.ContainsKey(varName))
-            {
-                PrintError($"Variable '{varName}' is already declared.");
-                return;
-            }
+    private void ParseVariableDeclaration()
+    {
+        Token varNameToken = Advance();
+        if (varNameToken.Type != TokenType.Identifier)
+        {
+            PrintError("Expected variable name after 'let'.");
+            return;
+        }
+        string varName = varNameToken.Lexeme;
 
-            if (!Consume(TokenType.Equal, "Expected '=' after variable declaration."))
-            {
-                return;
-            }
+        if (varaibles.ContainsKey(varName))
+        {
+            PrintError($"Variable '{varName}' is already declared.");
+            return;
+        }
 
+        if (!Consume(TokenType.Equal, "Expected '=' after variable declaration."))
+        {
+            return;
+        }
+
+        Token valueToken = Peek();
+        if (valueToken.Type == TokenType.String)
+        {
+            varaibles.Add(varName, new Variable(valueToken.Lexeme));
+            Console.WriteLine($"Variable '{varName}' has assigned value {valueToken.Lexeme}.");
+            Advance();
+        }
+        else
+        {
             IExpression expression = ParseExpression();
-            varaibles.Add(varName, (int)expression.Accept(new Interpreter()));
+            varaibles.Add(varName, new Variable((int)expression.Accept(new Interpreter())));
             Console.WriteLine($"Variable '{varName}' has assigned value {(int)expression.Accept(new Interpreter())}.");
-
-            if (!Consume(TokenType.SemiColon, "Expected ';' after variable declaration."))
-            {
-                return;
-            }
         }
 
-        private void ParsePrintStatement()
+        if (!Consume(TokenType.SemiColon, "Expected ';' after variable declaration."))
         {
-            Token nextToken = Peek();
-            if (varaibles.ContainsKey(nextToken.Lexeme))
-            {
-                Console.WriteLine(varaibles[nextToken.Lexeme]);
-                Advance();
-            }
-            else if (nextToken.Type != TokenType.Identifier)
-            {
-                IExpression expression = ParseExpression();
-                Console.WriteLine(expression.Accept(new Interpreter()));
-            }
-            else
-            {
-                Console.WriteLine(nextToken.Lexeme);
-                Advance();
-            }
+            return;
+        }
+    }
 
-            if (!Consume(TokenType.SemiColon, "Expected ';' after print statement."))
-            {
-                return;
-            }
+    private void ParsePrintStatement()
+    {
+        Token nextToken = Peek();
+        if (nextToken.Type == TokenType.String)
+        {
+            Console.WriteLine(nextToken.Lexeme);
+            Advance();
+        }
+        else if (varaibles.ContainsKey(nextToken.Lexeme))
+        {
+            Variable var = varaibles[nextToken.Lexeme];
+            if (var.Type == Variable.VarType.Int)
+                Console.WriteLine(var.AsInt());
+            else if (var.Type == Variable.VarType.String)
+                Console.WriteLine(var.AsString());
+            Advance();
+        }
+        else if (nextToken.Type != TokenType.Identifier)
+        {
+            IExpression expression = ParseExpression();
+            Console.WriteLine(expression.Accept(new Interpreter()));
         }
 
-        private void ParseIfStatement()
+        if (!Consume(TokenType.SemiColon, "Expected ';' after print statement."))
         {
-            IExpression condition = ParseExpression();
-            if ((bool)condition.Accept(new Interpreter()))
+            return;
+        }
+    }
+
+    private void ParseIfStatement()
+    {
+        IExpression condition = ParseExpression();
+        if ((bool)condition.Accept(new Interpreter()))
+        {
+            ParseStatement();
+        }
+        else
+        {
+            while (Peek().Type != TokenType.Else && Peek().Type != TokenType.SemiColon && !IsAtEnd())
             {
+                Advance();
+            }
+
+            if (Peek().Type == TokenType.Else)
+            {
+                Advance(); // Consume 'else'
                 ParseStatement();
             }
-            else
+            else if (Peek().Type == TokenType.ElseIf)
             {
-                while (Peek().Type != TokenType.Else && Peek().Type != TokenType.SemiColon && !IsAtEnd())
+                IExpression condition2 = ParseExpression();
+                if ((bool)condition2.Accept(new Interpreter()))
                 {
                     Advance();
-                }
-
-                if (Peek().Type == TokenType.Else)
-                {
-                    Advance(); // Consume 'else'
                     ParseStatement();
                 }
-                else if (Peek().Type == TokenType.ElseIf)
-                {
-                    IExpression condition2 = ParseExpression();
-                    if ((bool)condition2.Accept(new Interpreter()))
-                    {
-                        Advance();
-                        ParseStatement();
-                    }
-                }
             }
         }
 
-        private IExpression ParseExpression()
+    }
+
+    private IExpression ParseExpression()
+    {
+        return ParseBinaryExpression();
+    }
+
+    private IExpression ParseBinaryExpression()
+    {
+        IExpression left = ParsePrimary();
+
+        while (IsBinaryOperator(Peek().Type))
         {
-            return ParseBinaryExpression();
+            Token op = Advance();
+            IExpression right = ParsePrimary();
+            left = new BinaryExpression(left, op, right);
         }
 
-        private IExpression ParseBinaryExpression()
+        return left;
+    }
+
+    private IExpression ParsePrimary()
+    {
+        Token currentToken = Advance();
+        if (currentToken.Type == TokenType.Number)
         {
-            IExpression left = ParsePrimary();
-
-            while (IsBinaryOperator(Peek().Type))
-            {
-                Token op = Advance();
-                IExpression right = ParsePrimary();
-                left = new BinaryExpression(left, op, right);
-            }
-
-            return left;
+            return new LiteralExpression(currentToken.Literal);
         }
-
-        private IExpression ParsePrimary()
+        else if (currentToken.Type == TokenType.LeftParen)
         {
-            Token currentToken = Advance();
-            if (currentToken.Type == TokenType.Number)
+            IExpression expression = ParseExpression();
+            if (!Consume(TokenType.RightParen, "Expected ')' after expression."))
             {
-                return new LiteralExpression(currentToken.Literal);
-            }
-            else if (currentToken.Type == TokenType.LeftParen)
-            {
-                IExpression expression = ParseExpression();
-                if (!Consume(TokenType.RightParen, "Expected ')' after expression."))
-                {
-                    return null;
-                }
-                return expression;
-            }
-            else
-            {
-                PrintError($"Unexpected token '{currentToken.Lexeme}'.");
                 return null;
             }
+            return expression;
         }
-
-        private Token Advance()
+        else
         {
-            if (!IsAtEnd())
-            {
-                _current++;
-            }
-            return _tokens[_current - 1];
+            PrintError($"Unexpected token '{currentToken.Lexeme}'.");
+            return null;
         }
+    }
 
-        private Token Peek()
+    private Token Advance()
+    {
+        if (!IsAtEnd())
         {
-            if (IsAtEnd())
-            {
-                return _tokens[_tokens.Count - 1];
-            }
-            return _tokens[_current];
+            _current++;
         }
+        return _tokens[_current - 1];
+    }
 
-        private bool IsAtEnd()
+    private Token Peek()
+    {
+        if (IsAtEnd())
         {
-            return _current >= _tokens.Count;
+            return _tokens[_tokens.Count - 1];
         }
+        return _tokens[_current];
+    }
 
-        private bool IsBinaryOperator(TokenType type)
-        {
-            return type == TokenType.Plus || type == TokenType.Minus ||
-                   type == TokenType.Multiply || type == TokenType.Divide ||
-                   type == TokenType.Equal || type == TokenType.LessThan ||
-                   type == TokenType.GreaterThan;
-        }
+    private bool IsAtEnd()
+    {
+        return _current >= _tokens.Count;
+    }
 
-        private bool Consume(TokenType type, string message)
-        {
-            if (Peek().Type == type)
-            {
-                Advance();
-                return true;
-            }
-            else
-            {
-                PrintError(message);
-                return false;
-            }
-        }
+    private bool IsBinaryOperator(TokenType type)
+    {
+        return type == TokenType.Plus || type == TokenType.Minus ||
+               type == TokenType.Multiply || type == TokenType.Divide ||
+               type == TokenType.Equal || type == TokenType.LessThan ||
+               type == TokenType.GreaterThan;
+    }
 
-        private void PrintError(string message)
+    private bool Consume(TokenType type, string message)
+    {
+        if (Peek().Type == type)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message);
-            Console.ResetColor();
+            Advance();
+            return true;
         }
+        else
+        {
+            PrintError(message);
+            return false;
+        }
+    }
+
+    private void PrintError(string message)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(message);
+        Console.ResetColor();
     }
 }
