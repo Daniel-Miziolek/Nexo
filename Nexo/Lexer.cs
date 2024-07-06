@@ -65,6 +65,9 @@ namespace Nexo2
                 case '/':
                     AddToken(TokenType.Divide);
                     break;
+                case '.':
+                    AddToken(TokenType.Dot);
+                    break;
                 case '=':
                     AddToken(TokenType.Equal);
                     break;
@@ -157,6 +160,7 @@ namespace Nexo2
             else if (text == "else") type = TokenType.Else;
             else if (text == "else if") type = TokenType.ElseIf;
             else if (text == "let") type = TokenType.Variables;
+            else if (text == "const") type = TokenType.Constant;
             else if (Parser.varaibles.ContainsKey(text)) type = TokenType.ChValueOfVar;
             else if (text == "#") type = TokenType.Comment;
 

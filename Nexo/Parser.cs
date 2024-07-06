@@ -4,7 +4,8 @@ public class Parser
 {
     private readonly List<Token> _tokens;
     private int _current = 0;
-    public static Dictionary<string, Variable> varaibles = new Dictionary<string, Variable>();
+    public static Dictionary<string, Variable> varaibles = new();
+    public static HashSet<string> consts = new();
 
     public Parser(List<Token> tokens)
     {
@@ -34,6 +35,9 @@ public class Parser
             case TokenType.Variables:
                 ParseVariableDeclaration();
                 break;
+            case TokenType.Constant:
+                ParseConstDeclaration();
+                break;
             case TokenType.Else:
                 break;
             case TokenType.ElseIf:
@@ -58,14 +62,28 @@ public class Parser
         Token nextToken = Peek();
         if (nextToken.Type == TokenType.String)
         {
-            varaibles[name] = new Variable(nextToken.Lexeme);
-            Advance();
+            if (consts.Contains(name))
+            {
+                PrintError("Cannot assign to constan");
+            }
+            else
+            {
+                varaibles[name] = new Variable(nextToken.Lexeme);
+                Advance();
+            }            
         }
         else
         {
-            IExpression expression = ParseExpression();
-            varaibles[name] = new Variable((int)expression.Accept(new Interpreter()));
-            Console.WriteLine(varaibles[name].Value);
+            if (consts.Contains(name))
+            {
+                PrintError("Cannot assign to constan");
+            }
+            else
+            {
+                IExpression expression = ParseExpression();
+                varaibles[name] = new Variable((int)expression.Accept(new Interpreter()));
+                Console.WriteLine(varaibles[name].Value);
+            }
         }
 
         if (!Consume(TokenType.SemiColon, "Expected ';' after variable declaration."))
@@ -110,6 +128,49 @@ public class Parser
         }
 
         if (!Consume(TokenType.SemiColon, "Expected ';' after variable declaration."))
+        {
+            return;
+        }
+    }
+
+    private void ParseConstDeclaration()
+    {
+        Token varNameToken = Advance();
+        if (varNameToken.Type != TokenType.Identifier)
+        {
+            PrintError("Expected constant name after 'const'.");
+            return;
+        }
+        string varName = varNameToken.Lexeme;
+
+        if (varaibles.ContainsKey(varName))
+        {
+            PrintError($"Constant '{varName}' is already declared.");
+            return;
+        }
+
+        if (!Consume(TokenType.Equal, "Expected '=' after const declaration."))
+        {
+            return;
+        }
+
+        Token valueToken = Peek();
+        if (valueToken.Type == TokenType.String)
+        {
+            varaibles.Add(varName, new Variable(valueToken.Lexeme));
+            consts.Add(varName);
+            Console.WriteLine($"Constant '{varName}' has assigned value {valueToken.Lexeme}.");
+            Advance();
+        }
+        else
+        {
+            IExpression expression = ParseExpression(); 
+            varaibles.Add(varName, new Variable((int)expression.Accept(new Interpreter())));
+            consts.Add(varName);
+            Console.WriteLine($"Constant '{varName}' has assigned value {(int)expression.Accept(new Interpreter())}.");
+        }
+
+        if (!Consume(TokenType.SemiColon, "Expected ';' after const declaration."))
         {
             return;
         }
