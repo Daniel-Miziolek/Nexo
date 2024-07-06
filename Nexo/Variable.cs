@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nexo2
 {
-    public class Variable
+    public sealed class Variable
     {
         public enum VarType
         {
