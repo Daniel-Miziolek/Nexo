@@ -18,6 +18,7 @@ namespace Nexo2
         String,
         Identifier,
         Dot,
+        Comma,
         Number,
         Plus,
         Minus,
@@ -31,6 +32,8 @@ namespace Nexo2
         RightParen,
         LeftBrace,
         RightBrace,
+        LeftBracket,
+        RightBracket,
         SemiColon
     }
 

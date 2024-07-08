@@ -50,6 +50,12 @@ namespace Nexo2
                 case '}':
                     AddToken(TokenType.RightBrace);
                     break;
+                case '[':
+                    AddToken(TokenType.LeftBracket);
+                    break;
+                case ']':
+                    AddToken(TokenType.RightBracket);
+                    break;
                 case '"':
                     ScanString();
                     break;
@@ -76,6 +82,9 @@ namespace Nexo2
                     break;
                 case '>':
                     AddToken(TokenType.GreaterThan);
+                    break;
+                case ',':
+                    AddToken(TokenType.Comma);
                     break;
                 case ';':
                     AddToken(TokenType.SemiColon);

@@ -1,4 +1,5 @@
 ﻿using Nexo2;
+using System.Linq.Expressions;
 
 public class Parser
 {
@@ -120,6 +121,16 @@ public class Parser
             Console.WriteLine($"Variable '{varName}' has assigned value {valueToken.Lexeme}.");
             Advance();
         }
+        else if (valueToken.Type == TokenType.LeftBracket)
+        {
+            List<int> listValues = ParseList();
+            varaibles.Add(varName, new Variable(listValues));
+            Console.WriteLine($"Variable '{varName}' has assigned value list value: ");
+            foreach( int value in listValues )
+            {
+                Console.WriteLine(value);
+            }
+        }
         else
         {
             IExpression expression = ParseExpression();
@@ -176,6 +187,32 @@ public class Parser
         }
     }
 
+    private List<int> ParseList()
+    {
+        List<int> values = new List<int>();
+        Advance();
+
+        while (!IsAtEnd() && Peek().Type != TokenType.RightBracket)
+        {
+            Token valueToken = Advance();
+            if (valueToken.Type == TokenType.Number)
+            {
+                values.Add((int)valueToken.Literal);
+            }
+
+            if (Peek().Type == TokenType.Comma)
+            {
+                Advance();
+            }
+            else
+            {
+                break;
+            }
+        }
+        Advance();
+        return values;
+    }
+
     private void ParsePrintStatement()
     {
         Token nextToken = Peek();
@@ -191,6 +228,10 @@ public class Parser
                 Console.WriteLine(var.AsInt());
             else if (var.Type == Variable.VarType.String)
                 Console.WriteLine(var.AsString());
+            else if (var.Type == Variable.VarType.List)
+            {
+                Console.WriteLine(string.Join(",", var.AsList())); 
+            }
             Advance();
         }
         else if (nextToken.Type != TokenType.Identifier)
@@ -250,7 +291,7 @@ public class Parser
         {
             Token op = Advance();
             IExpression right = ParsePrimary();
-            left = new BinaryExpression(left, op, right);
+            left = new Nexo2.BinaryExpression(left, op, right);
         }
 
         return left;

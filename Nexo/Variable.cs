@@ -11,11 +11,13 @@ namespace Nexo2
         public enum VarType
         {
             Int,
-            String
+            String,
+            List
         }
 
         public VarType Type { get; }
         public object Value { get; }
+        private List<int> listValue;
 
         public Variable(int value)
         {
@@ -29,20 +31,26 @@ namespace Nexo2
             Value = value;
         }
 
+        public Variable(List<int> value)
+        {
+            Type = VarType.List;
+            listValue = value;
+        }
+
         public int AsInt()
         {
-            if (Type != VarType.Int)
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.ResetColor();
             return (int)Value;
         }
 
         public string AsString()
-        {
-            if (Type != VarType.String)
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.ResetColor();
+        { 
             return (string)Value;
+        }
+
+
+        public List<int> AsList()
+        {
+            return listValue;
         }
     }
 }
