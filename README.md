@@ -1,23 +1,17 @@
 # Nexo
 
-A simple console programming languege
+A programming language that I created to learn how other programming languages work.
 
 
 ## Examples
 
-    >print 5 + 2;
-    7
-    >let x = 5;
-    Variable 'x' has assigned value 5
-    >print x;
+    > (2 + 2) * 2
+    8
+    > let x = 5
+    > print(x)
     5
-    >let y = [1,2,3];
-    print y;
-    Variable y has assigned value list value:
-    1
-    2
-    3
-    > if (2 > 3) print 5; else if (5 > 3) print 10;
+    > x = 10
+    > print(x)
     10
 
   
