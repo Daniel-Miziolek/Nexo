@@ -51,14 +51,20 @@ namespace Nexo
                 Lexer lexer = new Lexer(source);
                 List<Token> tokens = lexer.ScanTokens();
 
-                var ast = Parser.Parse(tokens);
-                var value = ast.Eval(scope);
-                if (!(value is VoidValue))
+                try
                 {
-                    Console.WriteLine(value);
-                }   
+                    var ast = Parser.Parse(tokens);
+                    var value = ast.Eval(scope);
+                    if (!(value is VoidValue))
+                    {
+                        Console.WriteLine(value);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }                   
             }
         }
     }
-
 }

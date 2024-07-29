@@ -59,29 +59,29 @@ public class Parser
 
     private Expr ParseVariableDeclaration()
     {
-        if (Current().Type != TokenType.Variables)
+        if (Current().Type != TokenType.Variables && Current().Type != TokenType.Constant)
         {
             return ParseAdditive();
         }
 
-        Advance();        
+        bool isConstant = Advance().Type == TokenType.Constant;        
 
         if (Current().Type != TokenType.Identifier)
         {
             Console.WriteLine(Current().Type);
-            throw new Exception("Expected name of variable after let");
+            throw new Exception("Expected name");
         }
 
         string name = Advance().Lexeme;
 
         if (Advance().Type != TokenType.Equal)
         {
-            throw new Exception("Expected = after name of variable");
+            throw new Exception("Expected '='");
         }
 
         var expr = ParseAdditive();
 
-        return new DeclExpr(name, expr);
+        return new DeclExpr(name, expr, isConstant);
     }
 
     private Expr ParseAdditive()

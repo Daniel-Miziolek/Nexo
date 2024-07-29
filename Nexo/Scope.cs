@@ -9,14 +9,14 @@ namespace Nexo
 {
     public sealed class Scope
     {
-        private Dictionary<string, Value> _variables;
+        private Dictionary<string, (Value, bool)> _variables;
         private readonly Scope? _parent;
 
         public Scope()
         {
             _variables = [];
         }
-
+        
         public Scope(Scope parnet)
         {
             _variables = [];
@@ -38,9 +38,9 @@ namespace Nexo
             return _parent.GetScope(name);            
         }
 
-        public void Declare(string name, Value value)
+        public void Declare(string name, Value value, bool isConstant)
         {
-            _variables.Add(name, value);
+            _variables.Add(name, (value, isConstant));
         }
 
         public Value Get(string name)
@@ -50,9 +50,9 @@ namespace Nexo
             {
                 throw new Exception("Not declareted");
             }            
-            return scope._variables[name];
+            return scope._variables[name].Item1;
         }
-        
+
         public void Set(string name, Value value)
         {
             var scope = GetScope(name);
@@ -60,7 +60,12 @@ namespace Nexo
             {
                 throw new Exception("Not declareted");
             }
-            scope._variables[name] = value;
+
+            if (scope._variables[name].Item2)
+            {
+                throw new Exception("Cannot assign to constant");
+            }
+            scope._variables[name] = (value, false);
         }
     }
 }

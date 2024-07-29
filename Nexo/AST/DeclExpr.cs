@@ -11,16 +11,19 @@ namespace Nexo.AST
     {
         private readonly string _name;
         private readonly Expr _expr;
+        private readonly bool _isConstant;
 
-        public DeclExpr(string name, Expr expr)
+        public DeclExpr(string name, Expr expr, bool isConstant)
         {
             _name = name;
             _expr = expr;
+            _isConstant = isConstant;
+
         }
 
         public override Value Eval(Scope scope)
         {
-            scope.Declare(_name, _expr.Eval(scope));
+            scope.Declare(_name, _expr.Eval(scope), _isConstant);
             return new VoidValue();
         }
     }
