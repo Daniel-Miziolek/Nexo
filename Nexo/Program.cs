@@ -10,6 +10,7 @@ namespace Nexo
         Print,
         If,
         Else,
+        Boolean,
         ElseIf,
         Comment,
         Variables,

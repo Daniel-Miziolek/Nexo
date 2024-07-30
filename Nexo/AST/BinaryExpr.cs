@@ -18,7 +18,8 @@ namespace Nexo.AST
             Plus,
             Minus,
             Mul,
-            Div
+            Div,
+            Equal
         }
 
         public BinaryExpr(Expr left, Expr right, Op op)
@@ -37,6 +38,7 @@ namespace Nexo.AST
                 (Number left, Number right, Op.Mul) => new Number(left.Value * right.Value),
                 (Number left, Number right, Op.Div) => new Number(left.Value / right.Value),
                 (StringValue left, StringValue right, Op.Plus) => new StringValue(left.Value + right.Value),
+                (Number left, Number right, Op.Equal) => new BooleanValue(left.Value == right.Value),
                 _ => throw new Exception()
             }; 
         }

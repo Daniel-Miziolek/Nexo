@@ -37,7 +37,7 @@ public class Parser
     }
 
     private Expr ParseAssignment()
-    { //x = 5;
+    { 
         if (Current().Type != TokenType.Identifier || (_tokens.Count <= _current+1 || _tokens[_current+1].Type != TokenType.Equal))
         {
             return ParseVariableDeclaration();
@@ -104,7 +104,7 @@ public class Parser
 
     private Expr ParseMultiplicative()
     {
-        var left = ParsePrimary();
+        var left = ParseEqual();
 
         while (!Eof() && (Current().Type == TokenType.Mul || Current().Type == TokenType.Div))
         {
@@ -112,6 +112,23 @@ public class Parser
             {
                 TokenType.Mul => BinaryExpr.Op.Mul,
                 TokenType.Div => BinaryExpr.Op.Div,
+            };
+            var right = ParsePrimary();
+            left = new BinaryExpr(left, right, op);
+        }
+
+        return left;
+    }
+
+    private Expr ParseEqual()
+    {
+        var left = ParsePrimary();
+
+        while (!Eof() && (Current().Type == TokenType.Equal))
+        {
+            var op = Advance().Type switch
+            {
+                TokenType.Equal => BinaryExpr.Op.Equal,
             };
             var right = ParsePrimary();
             left = new BinaryExpr(left, right, op);
@@ -136,6 +153,8 @@ public class Parser
                 return expr;
             case TokenType.String:
                 return new StringLiteral(Advance().Lexeme);
+            case TokenType.Boolean:
+                return new BooleanLiteral(bool.Parse(Advance().Lexeme));
             case TokenType.Print:
                 return ParsePrint();
             case TokenType.Identifier:
