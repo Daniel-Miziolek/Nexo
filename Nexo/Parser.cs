@@ -122,13 +122,31 @@ public class Parser
 
     private Expr ParseEqual()
     {
-        var left = ParsePrimary();
+        var left = ParseGreaterOrLess();
 
         while (!Eof() && (Current().Type == TokenType.Equal))
         {
             var op = Advance().Type switch
             {
                 TokenType.Equal => BinaryExpr.Op.Equal,
+            };
+            var right = ParsePrimary();
+            left = new BinaryExpr(left, right, op);
+        }
+
+        return left;
+    }
+
+    private Expr ParseGreaterOrLess()
+    {
+        var left = ParsePrimary();
+
+        while (!Eof() && (Current().Type == TokenType.GreaterThan || Current().Type == TokenType.LessThan))
+        {
+            var op = Advance().Type switch
+            {
+                TokenType.GreaterThan => BinaryExpr.Op.GreaterThan,
+                TokenType.LessThan => BinaryExpr.Op.LessThan,
             };
             var right = ParsePrimary();
             left = new BinaryExpr(left, right, op);
