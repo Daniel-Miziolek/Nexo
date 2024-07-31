@@ -9,7 +9,7 @@ namespace Nexo
 {
     public sealed class Scope
     {
-        private Dictionary<string, (Value, bool)> _variables;
+        private readonly Dictionary<string, (Value, bool)> _variables;
         private readonly Scope? _parent;
 
         public Scope()
@@ -46,21 +46,12 @@ namespace Nexo
         public Value Get(string name)
         {
             var scope = GetScope(name);
-            if (scope == null)
-            {
-                throw new Exception("Not declareted");
-            }            
-            return scope._variables[name].Item1;
+            return scope == null ? throw new Exception("Not declareted") : scope._variables[name].Item1;
         }
 
         public void Set(string name, Value value)
         {
-            var scope = GetScope(name);
-            if (scope == null)
-            {
-                throw new Exception("Not declareted");
-            }
-
+            var scope = GetScope(name) ?? throw new Exception("Not declareted");
             if (scope._variables[name].Item2)
             {
                 throw new Exception("Cannot assign to constant");

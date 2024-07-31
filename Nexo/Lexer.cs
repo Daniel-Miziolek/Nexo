@@ -2,24 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Nexo
 {
-    public class Lexer
+    public class Lexer(string source)
     {
-        private readonly string _source;
-        private readonly List<Token> _tokens = new List<Token>();
+        private readonly string _source = source;
+        private readonly List<Token> _tokens = [];
 
         private int _start = 0;
         private int _current = 0;
         private int _line = 1;
-
-        public Lexer(string source)
-        {
-            _source = source;
-        }
 
         public List<Token> ScanTokens()
         {
@@ -152,7 +148,7 @@ namespace Nexo
                 Advance();
             }
 
-            string number = _source.Substring(_start, _current - _start);
+            string number = _source[_start.._current];
             _tokens.Add(new Token(TokenType.Number, number, int.Parse(number)));
         }
 
@@ -163,7 +159,7 @@ namespace Nexo
                 Advance();
             }
 
-            string text = _source.Substring(_start, _current - _start);
+            string text = _source[_start.._current];
             TokenType type = TokenType.Identifier;
             if (text == "print") type = TokenType.Print;
             else if (text == "if") type = TokenType.If;
@@ -193,9 +189,9 @@ namespace Nexo
             return _source[_current];
         }
 
-        private void AddToken(TokenType type, object literal = null)
+        private void AddToken(TokenType type, object? literal = null)
         {
-            string text = _source.Substring(_start, _current - _start);
+            string text = _source[_start.._current];
             if (type == TokenType.String)
             {
                 text = _source.Substring(_start + 1, _current - _start - 2);

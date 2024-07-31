@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Nexo.AST
 {
-    public sealed class BinaryExpr : Expr
+    public sealed class BinaryExpr(Expr left, Expr right, BinaryExpr.Op op) : Expr
     {
-        private Expr _left;
-        private Expr _right;
-        private Op _op;
+        private readonly Expr _left = left;
+        private readonly Expr _right = right;
+        private readonly Op _op = op;
 
         public enum Op
         {
@@ -22,13 +22,6 @@ namespace Nexo.AST
             Equal,
             GreaterThan,
             LessThan
-        }
-
-        public BinaryExpr(Expr left, Expr right, Op op)
-        {
-            _left = left;
-            _right = right;
-            _op = op;   
         }
 
         public override Value Eval(Scope scope)

@@ -7,19 +7,11 @@ using System.Threading.Tasks;
 
 namespace Nexo.AST
 {
-    public sealed class DeclExpr : Expr
+    public sealed class DeclExpr(string name, Expr expr, bool isConstant) : Expr
     {
-        private readonly string _name;
-        private readonly Expr _expr;
-        private readonly bool _isConstant;
-
-        public DeclExpr(string name, Expr expr, bool isConstant)
-        {
-            _name = name;
-            _expr = expr;
-            _isConstant = isConstant;
-
-        }
+        private readonly string _name = name;
+        private readonly Expr _expr = expr;
+        private readonly bool _isConstant = isConstant;
 
         public override Value Eval(Scope scope)
         {

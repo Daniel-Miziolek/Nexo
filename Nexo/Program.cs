@@ -42,21 +42,21 @@ namespace Nexo
   
     public class MainF
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
             Scope scope = new();
             while (true)
             {
                 Console.Write("> ");
                 string source = Console.ReadLine();
-                Lexer lexer = new Lexer(source);
+                Lexer lexer = new(source);
                 List<Token> tokens = lexer.ScanTokens();
 
                 try
                 {
                     var ast = Parser.Parse(tokens);
                     var value = ast.Eval(scope);
-                    if (!(value is VoidValue))
+                    if (value is not VoidValue)
                     {
                         Console.WriteLine(value);
                     }

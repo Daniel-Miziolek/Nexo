@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace Nexo.Values
 {
-    public sealed class BooleanValue : Value
+    public sealed class BooleanValue(bool value) : Value
     {
-        public bool Value { get; init; }
-
-        public BooleanValue(bool value)
-        {
-            Value = value;
-        }
+        public bool Value { get; init; } = value;
 
         public override string ToString()
         {

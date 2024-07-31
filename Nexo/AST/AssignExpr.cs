@@ -7,15 +7,10 @@ using System.Threading.Tasks;
 
 namespace Nexo.AST
 {
-    public sealed class AssignExpr : Expr
+    public sealed class AssignExpr(string left, Expr right) : Expr
     {
-        private readonly string _left;
-        private readonly Expr _right;
-        public AssignExpr(string left, Expr right)
-        {
-            _left = left;
-            _right = right;
-        }
+        private readonly string _left = left;
+        private readonly Expr _right = right;
 
         public override Value Eval(Scope scope)
         {

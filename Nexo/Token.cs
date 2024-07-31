@@ -6,17 +6,10 @@ using System.Threading.Tasks;
 
 namespace Nexo
 {
-    public class Token
+    public class Token(TokenType type, string lexeme, object? literal)
     {
-        public TokenType Type { get; }
-        public string Lexeme { get; }
-        public object Literal { get; }
-
-        public Token(TokenType type, string lexeme, object literal)
-        {
-            Type = type;
-            Lexeme = lexeme;
-            Literal = literal;
-        }
+        public TokenType Type { get; } = type;
+        public string Lexeme { get; } = lexeme;
+        public object? Literal { get; } = literal;
     }
 }
