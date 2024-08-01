@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 
-
 namespace Nexo
 {
     public enum TokenType
@@ -39,16 +38,19 @@ namespace Nexo
         SemiColon
     }
 
-  
     public class MainF
     {
+        private static int lineNumber = 1;
+
         public static void Main()
         {
             Scope scope = new();
             while (true)
             {
-                Console.Write("> ");
-                string source = Console.ReadLine();
+                Console.Write($"{lineNumber}. ");
+                string source = Console.ReadLine();                
+                lineNumber++;
+
                 Lexer lexer = new(source);
                 List<Token> tokens = lexer.ScanTokens();
 
@@ -64,7 +66,7 @@ namespace Nexo
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
-                }                   
+                }
             }
         }
     }
