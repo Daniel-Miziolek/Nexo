@@ -11,5 +11,10 @@ namespace Nexo
         public TokenType Type { get; } = type;
         public string Lexeme { get; } = lexeme;
         public object? Literal { get; } = literal;
+
+        public override string ToString() 
+        {
+            return Lexeme; 
+        }
     }
 }

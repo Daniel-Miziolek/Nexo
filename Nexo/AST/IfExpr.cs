@@ -1,4 +1,5 @@
-﻿using Nexo.Values;
+﻿using Nexo.Exceptions;
+using Nexo.Values;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Nexo.AST
                     return new VoidValue();
                 }
             }
-            throw new Exception("Condition must be bool");
+            throw new UnexpectedTypeException("bool");
         }
     }
 }

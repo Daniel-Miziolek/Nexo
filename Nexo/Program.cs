@@ -11,11 +11,8 @@ namespace Nexo
         Else,
         Boolean,
         ElseIf,
-        Comment,
         Variables,
         Constant,
-        Name,
-        Value,
         String,
         Identifier,
         Dot,
@@ -23,7 +20,6 @@ namespace Nexo
         Number,
         Plus,
         Minus,
-        ChValueOfVar,
         Mul,
         Div,
         Equal,
@@ -35,7 +31,7 @@ namespace Nexo
         RightBrace,
         LeftBracket,
         RightBracket,
-        SemiColon
+        SemiColon        
     }
 
     public class MainF
@@ -65,7 +61,7 @@ namespace Nexo
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.ToString());
                 }
             }
         }

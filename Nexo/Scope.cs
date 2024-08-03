@@ -1,4 +1,5 @@
-﻿using Nexo.Values;
+﻿using Nexo.Exceptions;
+using Nexo.Values;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,15 +47,15 @@ namespace Nexo
         public Value Get(string name)
         {
             var scope = GetScope(name);
-            return scope == null ? throw new Exception("Not declareted") : scope._variables[name].Item1;
+            return scope == null ? throw new NotDeclaredException(name) : scope._variables[name].Item1;
         }
 
         public void Set(string name, Value value)
         {
-            var scope = GetScope(name) ?? throw new Exception("Not declareted");
+            var scope = GetScope(name) ?? throw new NotDeclaredException(name);
             if (scope._variables[name].Item2)
             {
-                throw new Exception("Cannot assign to constant");
+                throw new ConstAssignmentException(name);
             }
             scope._variables[name] = (value, false);
         }

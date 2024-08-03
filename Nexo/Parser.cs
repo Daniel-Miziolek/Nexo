@@ -1,4 +1,5 @@
 ﻿using Nexo.AST;
+using Nexo.Exceptions;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using static Nexo.AST.BinaryExpr;
@@ -66,16 +67,18 @@ namespace Nexo
 
         private Expr ParseBody()
         {
-            if (Advance().Type != TokenType.LeftBrace)
+            if (Current().Type != TokenType.LeftBrace)
             {
-                throw new Exception("Expected '{'");
+                throw new UnexpectedTokenException(Current(), TokenType.LeftBrace);
             }
+
+            Advance();
 
             var expr = ParseExpr();
 
             if (Current().Type != TokenType.RightBrace)
             {
-                throw new Exception("Expected '}'");
+                throw new UnexpectedTokenException(Current(), TokenType.RightBrace);
             }
 
             Advance();
@@ -94,7 +97,7 @@ namespace Nexo
 
             if (Current().Type != TokenType.Equal)
             {
-                throw new Exception("Expected = after name of variable");
+                throw new UnexpectedTokenException(Current(), TokenType.Equal);
             }
 
             Advance();
@@ -116,15 +119,17 @@ namespace Nexo
             if (Current().Type != TokenType.Identifier)
             {
                 Console.WriteLine(Current().Type);
-                throw new Exception("Expected name");
+                throw new UnexpectedTokenException(Current(), TokenType.Identifier);
             }
 
             string name = Advance().Lexeme;
 
-            if (Advance().Type != TokenType.Equal)
+            if (Current().Type != TokenType.Equal)
             {
-                throw new Exception("Expected '='");
+                throw new UnexpectedTokenException(Current(), TokenType.Equal);
             }
+
+            Advance();
 
             var expr = ParseOpExpr();
 
@@ -220,10 +225,11 @@ namespace Nexo
                 case TokenType.LeftParen:
                     Advance();
                     var expr = ParseExpr();
-                    if (Advance().Type != TokenType.RightParen)
+                    if (Current().Type != TokenType.RightParen)
                     {
-                        throw new Exception("Expected right paren");
+                        throw new UnexpectedTokenException(Current(), TokenType.RightParen);
                     }
+                    Advance();
                     return expr;
                 case TokenType.String:
                     return new StringLiteral(Advance().Lexeme);
@@ -234,7 +240,7 @@ namespace Nexo
                 case TokenType.Identifier:
                     return new Identifier(Advance().Lexeme);
                 default:
-                    throw new Exception("Unexpected token " + Current().Lexeme);
+                    throw new InvalidTokenException(Current());
             }
         }
 

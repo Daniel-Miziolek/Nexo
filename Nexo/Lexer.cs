@@ -167,8 +167,6 @@ namespace Nexo
             else if (text == "else if") type = TokenType.ElseIf;
             else if (text == "let") type = TokenType.Variables;
             else if (text == "const") type = TokenType.Constant;
-            else if (text == "#") type = TokenType.Comment;
-
             _tokens.Add(new Token(type, text, null));
         }
 

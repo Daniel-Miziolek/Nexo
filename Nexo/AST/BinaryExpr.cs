@@ -1,4 +1,5 @@
-﻿using Nexo.Values;
+﻿using Nexo.Exceptions;
+using Nexo.Values;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace Nexo.AST
                 (Number left, Number right, Op.GreaterThan) => new BooleanValue(left.Value > right.Value),
                 (Number left, Number right, Op.LessThan) => new BooleanValue(left.Value < right.Value),
                 (StringValue left, StringValue right, Op.Equal) => new BooleanValue(left.Value == right.Value),
-                _ => throw new Exception()
+                _ => throw new BadBinaryOperatorUsageException(_op)
             }; 
         }
     }
