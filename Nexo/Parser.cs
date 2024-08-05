@@ -62,7 +62,14 @@ namespace Nexo
 
             var body = ParseBody();
 
-            return new IfExpr(condition, body);
+            if (!Eof() && Current().Type == TokenType.Else)
+            {
+                Advance();
+                var elseBody = ParseBody();
+                return new IfExpr(condition, body, elseBody);
+            }
+
+            return new IfExpr(condition, body, null);
         }
 
         private Expr ParseBody()
