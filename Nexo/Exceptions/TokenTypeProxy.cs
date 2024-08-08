@@ -1,14 +1,4 @@
-﻿using Nexo.AST;
-using Nexo.Values;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace Nexo.Exceptions
+﻿namespace Nexo.Exceptions
 {
     public sealed class TokenTypeProxy(TokenType tokenType)
     {
@@ -21,7 +11,6 @@ namespace Nexo.Exceptions
                 TokenType.Print => "print",
                 TokenType.If => "if",
                 TokenType.Else => "else",
-                TokenType.ElseIf => "elseif",
                 TokenType.Variables => "variables",
                 TokenType.Constant => "constant",
                 TokenType.Identifier => "identifier",

@@ -1,19 +1,7 @@
-﻿using Nexo.AST;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Nexo.Exceptions
+﻿namespace Nexo.Exceptions
 {
-    public sealed class NotDeclaredException(string name) : NexoException
+    public sealed class NotDeclaredException(string name) : NexoException($"Use of undeclared variable `{name}`.")
     {
-        private readonly string _name = name;
-
-        public override string ToString()
-        {
-            return $"Use of undeclared variable `{_name}`.";
-        }
+        public string Name { get; } = name;
     }
 }

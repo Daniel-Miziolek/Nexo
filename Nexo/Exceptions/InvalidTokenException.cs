@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Nexo.Exceptions
+﻿namespace Nexo.Exceptions
 {
-    public class InvalidTokenException(Token found) : NexoException
+    public class InvalidTokenException(Token found, string message) : NexoException(message)
     {
-        protected readonly Token _found = found;
-
-        public override string ToString()
-        {
-            return $"Unexpected token `{_found}`.";
-        }
+        public Token Found { get; } = found;
+       
+        public InvalidTokenException(Token found) : this(found, $"Unexpected token `{found}`.") { }
     }
 }

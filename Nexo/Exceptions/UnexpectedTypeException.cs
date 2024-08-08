@@ -1,19 +1,7 @@
-﻿using Nexo.AST;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Nexo.Exceptions
+﻿namespace Nexo.Exceptions
 {
-    public sealed class UnexpectedTypeException(string type) : NexoException
+    public sealed class UnexpectedTypeException(string type) : NexoException($"Expected `{type}`.")
     {
-        private readonly string _type = type;
-
-        public override string ToString()
-        {
-            return $"Expected `{_type}`.";
-        }
+        public string Type { get; } = type;
     }
 }

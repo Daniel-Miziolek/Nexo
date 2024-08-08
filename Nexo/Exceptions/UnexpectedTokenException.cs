@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Nexo.Exceptions
+﻿namespace Nexo.Exceptions
 {
-    public class UnexpectedTokenException(Token found, TokenType expected) : InvalidTokenException(found)
+    public class UnexpectedTokenException(Token found, TokenType expected) 
+        : InvalidTokenException(found, $"Unexpected token `{found}`, expected `{new TokenTypeProxy(expected)}`.")
     {
-        private readonly TokenTypeProxy _expected = new(expected);
-
-        public override string ToString()
-        {
-            return $"Unexpected token `{_found}`, expected `{_expected}`.";
-        }
+        public TokenType Expected { get; } = expected;
     }
 }
