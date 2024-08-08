@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Nexo
+﻿namespace Nexo
 {
     public class Lexer(string source)
     {
@@ -164,7 +156,6 @@ namespace Nexo
             if (text == "print") type = TokenType.Print;
             else if (text == "if") type = TokenType.If;
             else if (text == "else") type = TokenType.Else;
-            else if (text == "else if") type = TokenType.ElseIf;
             else if (text == "let") type = TokenType.Variables;
             else if (text == "const") type = TokenType.Constant;
             _tokens.Add(new Token(type, text, null));

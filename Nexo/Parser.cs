@@ -1,7 +1,6 @@
 ﻿using Nexo.AST;
 using Nexo.Exceptions;
 using System.Diagnostics;
-using System.Linq.Expressions;
 using static Nexo.AST.BinaryExpr;
 
 namespace Nexo
@@ -44,7 +43,7 @@ namespace Nexo
             return Current().Type switch
             {
                 TokenType.If => ParseIfExpr(),
-                TokenType.Variables => ParseVariableDeclaration(),
+                TokenType.Variables | TokenType.Constant => ParseVariableDeclaration(),
                 _ => ParseOpExpr()
             };
         }
@@ -65,8 +64,17 @@ namespace Nexo
             if (!Eof() && Current().Type == TokenType.Else)
             {
                 Advance();
-                var elseBody = ParseBody();
-                return new IfExpr(condition, body, elseBody);
+
+                if (Current().Type == TokenType.If)
+                {
+                    var elseIfBody = ParseIfExpr();
+                    return new IfExpr(condition, body, elseIfBody);
+                }
+                else
+                {
+                    var elseBody = ParseBody();
+                    return new IfExpr(condition, body, elseBody);
+                }                
             }
 
             return new IfExpr(condition, body, null);
@@ -118,6 +126,7 @@ namespace Nexo
         {
             if (Current().Type != TokenType.Variables && Current().Type != TokenType.Constant)
             {
+                Console.WriteLine(Current().Type);
                 return ParseOpExpr();
             }
 
