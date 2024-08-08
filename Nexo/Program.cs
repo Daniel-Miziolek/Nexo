@@ -1,6 +1,4 @@
 ﻿using Nexo.Values;
-using System;
-using System.Collections.Generic;
 
 namespace Nexo
 {
@@ -10,7 +8,6 @@ namespace Nexo
         If,
         Else,
         Boolean,
-        ElseIf,
         Variables,
         Constant,
         String,
@@ -61,7 +58,7 @@ namespace Nexo
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.ToString());
+                    Console.WriteLine(e.Message);
                 }
             }
         }
