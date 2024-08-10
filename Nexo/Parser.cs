@@ -43,7 +43,7 @@ namespace Nexo
             return Current().Type switch
             {
                 TokenType.If => ParseIfExpr(),
-                TokenType.Variables | TokenType.Constant => ParseVariableDeclaration(),
+                TokenType.Variables or TokenType.Constant => ParseVariableDeclaration(),
                 _ => ParseOpExpr()
             };
         }

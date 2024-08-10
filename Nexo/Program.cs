@@ -1,4 +1,5 @@
-﻿using Nexo.Values;
+﻿using Nexo.AST;
+using Nexo.Values;
 
 namespace Nexo
 {
@@ -54,7 +55,7 @@ namespace Nexo
                     if (value is not VoidValue)
                     {
                         Console.WriteLine(value);
-                    }
+                    }                    
                 }
                 catch (Exception e)
                 {

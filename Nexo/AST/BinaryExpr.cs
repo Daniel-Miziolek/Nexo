@@ -7,7 +7,7 @@ namespace Nexo.AST
     {
         private readonly Expr _left = left;
         private readonly Expr _right = right;
-        private readonly Op _op = op;
+        private readonly Op _op = op;        
 
         public enum Op
         {
