@@ -14,7 +14,7 @@ namespace Nexo.Exceptions
                 BinaryExpr.Op.Minus => "-",
                 BinaryExpr.Op.Mul => "*",
                 BinaryExpr.Op.Div => "/",
-                BinaryExpr.Op.Equal => "=",
+                BinaryExpr.Op.Comparsion => "==",
                 BinaryExpr.Op.LessThan => "<",
                 BinaryExpr.Op.GreaterThan => ">",
                 _ => throw new NotImplementedException(),

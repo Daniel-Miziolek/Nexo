@@ -63,7 +63,7 @@
                     AddToken(TokenType.Dot);
                     break;
                 case '=':
-                    AddToken(TokenType.Equal);
+                    AddToken(Match('=') ? TokenType.Comparison : TokenType.Equal);
                     break;
                 case '<':
                     AddToken(TokenType.LessThan);
@@ -108,6 +108,14 @@
                     }
                     break;
             }
+        }
+
+        private bool Match(char expected)
+        {
+            if (IsAtEnd()) return false;
+            if (_source[_current] != expected) return false;
+            _current++;
+            return true;
         }
 
         private void ScanString()
@@ -158,6 +166,8 @@
             else if (text == "else") type = TokenType.Else;
             else if (text == "let") type = TokenType.Variables;
             else if (text == "const") type = TokenType.Constant;
+            else if (text == "while") type = TokenType.While;
+            else if (text == "break") type = TokenType.Break;
             _tokens.Add(new Token(type, text, null));
         }
 

@@ -16,8 +16,7 @@ namespace Nexo.AST
             {
                 if (b.Value)
                 {
-                    var nestedScope = new Scope(scope);
-                    return _body.Eval(nestedScope);
+                    return _body.Eval(scope);
                 }
 
                 if (_elseBody is not null)

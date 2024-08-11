@@ -1,4 +1,4 @@
-﻿using Nexo.AST;
+﻿using Nexo.Exceptions;
 using Nexo.Values;
 
 namespace Nexo
@@ -21,6 +21,9 @@ namespace Nexo
         Mul,
         Div,
         Equal,
+        Comparison,
+        While,
+        Break,
         LessThan,
         GreaterThan,
         LeftParen,
@@ -57,7 +60,7 @@ namespace Nexo
                         Console.WriteLine(value);
                     }                    
                 }
-                catch (Exception e)
+                catch (NexoException e)
                 {
                     Console.WriteLine(e.Message);
                 }

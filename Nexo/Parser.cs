@@ -44,9 +44,39 @@ namespace Nexo
             {
                 TokenType.If => ParseIfExpr(),
                 TokenType.Variables or TokenType.Constant => ParseVariableDeclaration(),
+                TokenType.While => ParseWhileExpr(),
                 _ => ParseOpExpr()
             };
         }
+
+        private Expr ParseBreakExpr()
+        {
+            if (Current().Type != TokenType.Break)
+            {
+                throw new UnexpectedTokenException(Current(), TokenType.Break);
+            }
+
+            Advance();
+
+            return new BreakExpr();
+        }
+
+        private Expr ParseWhileExpr()
+        {
+            if (Current().Type != TokenType.While)
+            {
+                return ParseOpExpr();
+            }
+
+            Advance();
+
+            var condition = ParseOpExpr();
+
+            var body = ParseBody();
+
+            return new WhileExpr(condition, body);
+        }
+
 
         private Expr ParseIfExpr()
         {
@@ -89,7 +119,20 @@ namespace Nexo
 
             Advance();
 
-            var expr = ParseExpr();
+            List<Expr> body = [];
+
+            while (Current().Type != TokenType.RightBrace)
+            {
+                body.Add(ParseExpr());
+                if (Current().Type != TokenType.SemiColon)
+                {
+                    break;
+                }
+                else
+                {
+                    Advance();
+                }
+            }
 
             if (Current().Type != TokenType.RightBrace)
             {
@@ -98,7 +141,7 @@ namespace Nexo
 
             Advance();
 
-            return expr;
+            return new BodyExpr(body);
         }
 
         private Expr ParseAssignment()
@@ -161,11 +204,11 @@ namespace Nexo
         {
             var left = ParseGreaterOrLess();
 
-            while (!Eof() && Current().Type == TokenType.Equal)
+            while (!Eof() && Current().Type == TokenType.Comparison)
             {
                 var op = Advance().Type switch
                 {
-                    TokenType.Equal => Op.Equal,
+                    TokenType.Comparison => Op.Comparsion,
                     _ => throw new UnreachableException(),
                 };
                 var right = ParseGreaterOrLess();
@@ -253,6 +296,8 @@ namespace Nexo
                     return new BooleanLiteral(bool.Parse(Advance().Lexeme));
                 case TokenType.Print:
                     return ParsePrint();
+                case TokenType.Break:
+                    return ParseBreakExpr();
                 case TokenType.Identifier:
                     return new Identifier(Advance().Lexeme);
                 default:
