@@ -1,4 +1,7 @@
-﻿using Nexo.Exceptions;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Nexo.Exceptions;
 using Nexo.Values;
 
 namespace Nexo
@@ -32,21 +35,21 @@ namespace Nexo
         RightBrace,
         LeftBracket,
         RightBracket,
-        SemiColon        
+        SemiColon,
+        EoF
     }
 
     public class MainF
     {
-        private static int lineNumber = 1;
-
         public static void Main()
         {
             Scope scope = new();
-            while (true)
+
+            string filePath = @"C:\Users\Daniel\Desktop\nexoCode.txt";
+
+            try
             {
-                Console.Write($"{lineNumber}. ");
-                string source = Console.ReadLine();                
-                lineNumber++;
+                string source = File.ReadAllText(filePath);
 
                 Lexer lexer = new(source);
                 List<Token> tokens = lexer.ScanTokens();
@@ -58,12 +61,16 @@ namespace Nexo
                     if (value is not VoidValue)
                     {
                         Console.WriteLine(value);
-                    }                    
+                    }
                 }
                 catch (NexoException e)
                 {
                     Console.WriteLine(e.Message);
                 }
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"Error reading file: {ex.Message}");
             }
         }
     }

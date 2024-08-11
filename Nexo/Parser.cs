@@ -23,14 +23,45 @@ namespace Nexo
         private Token Advance()
         {
             var current = Current();
-            _current++;
+            if (current.Type != TokenType.EoF)
+            {
+                _current++;
+            }
             return current;
         }
 
         public static Expr Parse(List<Token> tokens)
         {
+            tokens.Add(new Token(TokenType.EoF, "EoF", null));
             var parser = new Parser(tokens);
-            return parser.ParseExpr();
+            return parser.ParseTopLevel();
+        }
+
+        private BodyExpr ParseTopLevel()
+        {
+            List<Expr> exprs = [];
+                
+            while (!Eof())
+            {
+                var expr = ParseExpr();
+                exprs.Add(expr);
+                
+                if (Current().Type == TokenType.SemiColon)
+                {
+                    Advance();
+                }
+                else if (expr is not IfExpr or WhileExpr)
+                {
+                    break;
+                }
+            }
+
+            if (!Eof())
+            {
+                throw new UnexpectedTokenException(Current(), TokenType.SemiColon);
+            }
+
+            return new BodyExpr(exprs);
         }
 
         private Expr ParseExpr()
@@ -330,11 +361,7 @@ namespace Nexo
 
         private bool Eof()
         {
-            return _current >= _tokens.Count;
+            return Current().Type == TokenType.EoF;
         }
-
-
-
-
     }
 }

@@ -11,6 +11,7 @@
                 TokenType.Print => "print",
                 TokenType.If => "if",
                 TokenType.Else => "else",
+                TokenType.While => "while",
                 TokenType.Variables => "variables",
                 TokenType.Constant => "constant",
                 TokenType.Identifier => "identifier",
@@ -33,6 +34,7 @@
                 TokenType.RightBrace => "}",
                 TokenType.LeftBracket => "[",
                 TokenType.RightBracket => "]",
+                TokenType.EoF => "EoF",
                 _ => throw new NotImplementedException(),
             };
         }
