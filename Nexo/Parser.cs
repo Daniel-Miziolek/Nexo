@@ -50,7 +50,11 @@ namespace Nexo
                 {
                     Advance();
                 }
-                else if (expr is not IfExpr or WhileExpr)
+                else if (expr is not IfExpr)
+                {
+                    break;
+                }
+                else if (expr is not WhileExpr)
                 {
                     break;
                 }
@@ -78,6 +82,18 @@ namespace Nexo
                 TokenType.While => ParseWhileExpr(),
                 _ => ParseOpExpr()
             };
+        }
+
+        private Expr ParseContinueExpr()
+        {
+            if (Current().Type != TokenType.Continue)
+            {
+                throw new UnexpectedTokenException(Current(), TokenType.Continue);
+            }
+
+            Advance();
+
+            return new ContinueExpr();
         }
 
         private Expr ParseBreakExpr()
@@ -329,6 +345,8 @@ namespace Nexo
                     return ParsePrint();
                 case TokenType.Break:
                     return ParseBreakExpr();
+                case TokenType.Continue:
+                    return ParseContinueExpr();
                 case TokenType.Identifier:
                     return new Identifier(Advance().Lexeme);
                 default:

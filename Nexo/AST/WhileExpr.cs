@@ -29,6 +29,10 @@ namespace Nexo.AST
                     {
                         break;
                     }
+                    catch (ContinueException)
+                    {
+                        continue;
+                    }
 
                 }
                 else

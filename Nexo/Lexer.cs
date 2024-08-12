@@ -168,6 +168,7 @@
             else if (text == "const") type = TokenType.Constant;
             else if (text == "while") type = TokenType.While;
             else if (text == "break") type = TokenType.Break;
+            else if (text == "continue") type = TokenType.Continue;
             _tokens.Add(new Token(type, text, null));
         }
 

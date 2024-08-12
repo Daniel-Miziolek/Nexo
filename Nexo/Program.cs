@@ -27,6 +27,7 @@ namespace Nexo
         Comparison,
         While,
         Break,
+        Continue,
         LessThan,
         GreaterThan,
         LeftParen,
