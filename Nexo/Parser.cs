@@ -308,11 +308,12 @@ namespace Nexo
         {
             var left = ParseGreaterOrLess();
 
-            while (!Eof() && Current().Type == TokenType.Comparison)
+            while (!Eof() && Current().Type == TokenType.Comparison || Current().Type == TokenType.NotEqual)
             {
                 var op = Advance().Type switch
                 {
                     TokenType.Comparison => Op.Comparsion,
+                    TokenType.NotEqual => Op.NotEqual,
                     _ => throw new UnreachableException(),
                 };
                 var right = ParseGreaterOrLess();

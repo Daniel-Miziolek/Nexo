@@ -70,6 +70,9 @@ namespace Nexo
                 case '=':
                     AddToken(Match('=') ? TokenType.Comparison : TokenType.Equal);
                     break;
+                case '!':
+                    AddToken(Match('=') ? TokenType.NotEqual : TokenType.Bang);
+                    break;
                 case '<':
                     AddToken(TokenType.LessThan);
                     break;

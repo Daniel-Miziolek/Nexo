@@ -26,6 +26,8 @@ namespace Nexo
         Modulo,
         Equal,
         Comparison,
+        NotEqual,
+        Bang,
         While,
         Break,
         Continue,
