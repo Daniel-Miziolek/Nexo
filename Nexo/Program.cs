@@ -23,6 +23,7 @@ namespace Nexo
         Minus,
         Mul,
         Div,
+        Modulo,
         Equal,
         Comparison,
         While,

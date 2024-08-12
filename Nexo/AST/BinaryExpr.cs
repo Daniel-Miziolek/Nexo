@@ -15,6 +15,7 @@ namespace Nexo.AST
             Minus,
             Mul,
             Div,
+            Modulo,
             Comparsion,
             GreaterThan,
             LessThan
@@ -28,6 +29,7 @@ namespace Nexo.AST
                 (Number left, Number right, Op.Minus) => new Number(left.Value - right.Value),
                 (Number left, Number right, Op.Mul) => new Number(left.Value * right.Value),
                 (Number left, Number right, Op.Div) => new Number(left.Value / right.Value),
+                (Number left, Number right, Op.Modulo) => new Number(left.Value % right.Value),
                 (StringValue left, StringValue right, Op.Plus) => new StringValue(left.Value + right.Value),
                 (Number left, Number right, Op.Comparsion) => new BooleanValue(left.Value == right.Value),
                 (Number left, Number right, Op.GreaterThan) => new BooleanValue(left.Value > right.Value),

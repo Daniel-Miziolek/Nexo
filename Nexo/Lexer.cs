@@ -61,6 +61,9 @@ namespace Nexo
                 case '/':
                     AddToken(TokenType.Div);
                     break;
+                case '%':
+                    AddToken(TokenType.Modulo);
+                    break;
                 case '.':
                     AddToken(TokenType.Dot);
                     break;

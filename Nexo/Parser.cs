@@ -362,7 +362,7 @@ namespace Nexo
 
         private Expr ParseMultiplicative()
         {
-            var left = ParseFunctionCall();
+            var left = ParseModulo();
 
             while (!Eof() && (Current().Type == TokenType.Mul || Current().Type == TokenType.Div))
             {
@@ -370,6 +370,24 @@ namespace Nexo
                 {
                     TokenType.Mul => Op.Mul,
                     TokenType.Div => Op.Div,
+                    _ => throw new UnreachableException(),
+                };
+                var right = ParseModulo();
+                left = new BinaryExpr(left, right, op);
+            }
+
+            return left;
+        }
+
+        private Expr ParseModulo()
+        {
+            var left = ParseFunctionCall();
+
+            while (!Eof() && (Current().Type == TokenType.Modulo))
+            {
+                var op = Advance().Type switch
+                {
+                    TokenType.Modulo => Op.Modulo,
                     _ => throw new UnreachableException(),
                 };
                 var right = ParseFunctionCall();
