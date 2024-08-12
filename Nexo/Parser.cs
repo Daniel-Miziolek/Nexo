@@ -2,6 +2,7 @@
 using Nexo.Exceptions;
 using System.Diagnostics;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using static Nexo.AST.BinaryExpr;
 
 namespace Nexo
@@ -81,15 +82,70 @@ namespace Nexo
                 TokenType.If => ParseIfExpr(),
                 TokenType.Variables or TokenType.Constant => ParseVariableDeclaration(),
                 TokenType.While => ParseWhileExpr(),
+                TokenType.Function => ParseFunctionDeclaration(),
                 _ => ParseOpExpr()
             };
+        }        
+
+        private Expr ParseFunctionDeclaration()
+        {
+            if (Current().Type != TokenType.Function)
+            {
+                return ParseOpExpr();
+            }
+
+            Advance();
+
+            string functionName = Advance().Lexeme;
+
+            if (Current().Type != TokenType.LeftParen)
+            {
+                throw new UnexpectedTokenException(Current(), TokenType.LeftParen);
+            }
+
+            Advance();
+
+            List<string> args = [];
+
+            if (Current().Type != TokenType.RightParen)
+            {
+                do
+                {
+                    if (Current().Type != TokenType.Identifier)
+                    {
+                        throw new UnexpectedTokenException(Current(), TokenType.Identifier);
+                    }
+
+                    args.Add(Advance().Lexeme);
+
+                    if (Current().Type == TokenType.Comma)
+                    {
+                        Advance();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                } while (!Eof());
+            }
+
+            if (Current().Type != TokenType.RightParen)
+            {
+                throw new UnexpectedTokenException(Current(), TokenType.RightParen);
+            }                        
+
+            Advance();
+
+            var body = ParseBody();
+
+            return new FunctionExpr(functionName, args.ToArray(), body);
         }
 
         private Expr ParseContinueExpr()
         {
             if (Current().Type != TokenType.Continue)
             {
-                throw new UnexpectedTokenException(Current(), TokenType.Continue);
+                return ParseOpExpr();
             }
 
             Advance();
@@ -101,7 +157,7 @@ namespace Nexo
         {
             if (Current().Type != TokenType.Break)
             {
-                throw new UnexpectedTokenException(Current(), TokenType.Break);
+                return ParseOpExpr();
             }
 
             Advance();
@@ -306,7 +362,7 @@ namespace Nexo
 
         private Expr ParseMultiplicative()
         {
-            var left = ParsePrimary();
+            var left = ParseFunctionCall();
 
             while (!Eof() && (Current().Type == TokenType.Mul || Current().Type == TokenType.Div))
             {
@@ -316,11 +372,50 @@ namespace Nexo
                     TokenType.Div => Op.Div,
                     _ => throw new UnreachableException(),
                 };
-                var right = ParsePrimary();
+                var right = ParseFunctionCall();
                 left = new BinaryExpr(left, right, op);
             }
 
             return left;
+        }
+
+        private Expr ParseFunctionCall()
+        {
+            var call = ParsePrimary();
+            List<Expr> args = [];
+
+            if (Current().Type != TokenType.LeftParen)
+            {
+                return call;
+            }
+
+            Advance();
+
+            if (Current().Type != TokenType.RightParen)
+            {
+                do
+                {
+                    args.Add(ParseExpr());
+
+                    if (Current().Type == TokenType.Comma)
+                    {
+                        Advance();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                } while (!Eof());
+            }
+
+            if (Current().Type != TokenType.RightParen)
+            {
+                throw new UnexpectedTokenException(Current(), TokenType.RightParen);
+            }
+
+            Advance();
+
+            return new CallExpr(call, [.. args]);
         }
 
         private Expr ParsePrimary()

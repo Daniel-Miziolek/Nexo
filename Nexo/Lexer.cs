@@ -176,6 +176,7 @@ namespace Nexo
             else if (text == "while") type = TokenType.While;
             else if (text == "break") type = TokenType.Break;
             else if (text == "continue") type = TokenType.Continue;
+            else if (text == "fun") type = TokenType.Function;
             _tokens.Add(new Token(type, text, null));
         }
 

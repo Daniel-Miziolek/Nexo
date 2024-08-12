@@ -28,6 +28,7 @@ namespace Nexo
         While,
         Break,
         Continue,
+        Function,
         LessThan,
         GreaterThan,
         LeftParen,
@@ -58,11 +59,7 @@ namespace Nexo
                 try
                 {
                     var ast = Parser.Parse(tokens);
-                    var value = ast.Eval(scope);
-                    if (value is not VoidValue)
-                    {
-                        Console.WriteLine(value);
-                    }
+                    var value = ast.Eval(scope);                    
                 }
                 catch (NexoException e)
                 {
