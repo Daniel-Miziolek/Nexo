@@ -1,4 +1,6 @@
-﻿namespace Nexo
+﻿using System.Globalization;
+
+namespace Nexo
 {
     public class Lexer(string source)
     {
@@ -143,13 +145,18 @@
 
         private void ScanNumber()
         {
-            while (char.IsDigit(Peek()))
+            bool hasDot = false;
+            while (char.IsDigit(Peek()) || (Peek() == '.' && !hasDot))
             {
+                if (Peek() == '.')
+                {
+                    hasDot = true;
+                }
                 Advance();
             }
 
             string number = _source[_start.._current];
-            _tokens.Add(new Token(TokenType.Number, number, int.Parse(number)));
+            _tokens.Add(new Token(TokenType.Number, number, double.Parse(number, CultureInfo.InvariantCulture)));
         }
 
         private void ScanIdentifier()

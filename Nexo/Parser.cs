@@ -1,6 +1,7 @@
 ﻿using Nexo.AST;
 using Nexo.Exceptions;
 using System.Diagnostics;
+using System.Globalization;
 using static Nexo.AST.BinaryExpr;
 
 namespace Nexo
@@ -327,7 +328,7 @@ namespace Nexo
             switch (Current().Type)
             {
                 case TokenType.Number:
-                    return new NumberLiteral(double.Parse(Advance().Lexeme));
+                    return new NumberLiteral(double.Parse(Advance().Lexeme, CultureInfo.InvariantCulture));
                 case TokenType.LeftParen:
                     Advance();
                     var expr = ParseExpr();
