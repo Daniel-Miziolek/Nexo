@@ -74,10 +74,10 @@ namespace Nexo
                     AddToken(Match('=') ? TokenType.NotEqual : TokenType.Bang);
                     break;
                 case '<':
-                    AddToken(TokenType.LessThan);
+                    AddToken(Match('=') ? TokenType.LessThanOrEqual : TokenType.LessThan);
                     break;
                 case '>':
-                    AddToken(TokenType.GreaterThan);
+                    AddToken(Match('=') ? TokenType.GreaterThanOrEqual : TokenType.GreaterThan);
                     break;
                 case ',':
                     AddToken(TokenType.Comma);

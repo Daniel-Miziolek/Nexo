@@ -327,12 +327,14 @@ namespace Nexo
         {
             var left = ParseAdditive();
 
-            while (!Eof() && (Current().Type == TokenType.GreaterThan || Current().Type == TokenType.LessThan))
+            while (!Eof() && (Current().Type == TokenType.GreaterThan || Current().Type == TokenType.LessThan || Current().Type == TokenType.GreaterThanOrEqual || Current().Type == TokenType.LessThanOrEqual))
             {
                 var op = Advance().Type switch
                 {
                     TokenType.GreaterThan => Op.GreaterThan,
                     TokenType.LessThan => Op.LessThan,
+                    TokenType.GreaterThanOrEqual => Op.GreaterThanOrEqual,
+                    TokenType.LessThanOrEqual => Op.LessThanOrEqual,
                     _ => throw new UnreachableException(),
                 };
                 var right = ParseAdditive();

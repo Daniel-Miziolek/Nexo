@@ -19,7 +19,9 @@ namespace Nexo.AST
             Comparsion,
             NotEqual,
             GreaterThan,
-            LessThan
+            GreaterThanOrEqual,            
+            LessThan,
+            LessThanOrEqual,
         }
 
         public override Value Eval(Scope scope)
@@ -33,9 +35,11 @@ namespace Nexo.AST
                 (Number left, Number right, Op.Modulo) => new Number(left.Value % right.Value),
                 (StringValue left, StringValue right, Op.Plus) => new StringValue(left.Value + right.Value),
                 (Number left, Number right, Op.Comparsion) => new BooleanValue(left.Value == right.Value),
-                (Number left, Number  right, Op.NotEqual) => new BooleanValue(left.Value != right.Value),
+                (Number left, Number right, Op.NotEqual) => new BooleanValue(left.Value != right.Value),
                 (Number left, Number right, Op.GreaterThan) => new BooleanValue(left.Value > right.Value),
+                (Number left, Number right, Op.GreaterThanOrEqual) => new BooleanValue(left.Value >= right.Value),
                 (Number left, Number right, Op.LessThan) => new BooleanValue(left.Value < right.Value),
+                (Number left, Number right, Op.LessThanOrEqual) => new BooleanValue(left.Value <= right.Value),
                 (StringValue left, StringValue right, Op.Comparsion) => new BooleanValue(left.Value == right.Value),
                 (StringValue left, StringValue right, Op.NotEqual) => new BooleanValue(left.Value != right.Value),
                 _ => throw new BadBinaryOperatorUsageException(_op)
