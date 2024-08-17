@@ -79,6 +79,12 @@ namespace Nexo
                 case '>':
                     AddToken(Match('=') ? TokenType.GreaterThanOrEqual : TokenType.GreaterThan);
                     break;
+                case '&':
+                    AddToken(Match('&') ? TokenType.OpAnd : TokenType.And);
+                    break;
+                case '|':
+                    AddToken(Match('|') ? TokenType.OpOr : TokenType.Or);
+                    break;
                 case ',':
                     AddToken(TokenType.Comma);
                     break;

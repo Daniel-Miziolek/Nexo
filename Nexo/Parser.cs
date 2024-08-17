@@ -191,7 +191,7 @@ namespace Nexo
 
             Advance();
 
-            var condition = ParseOpExpr();
+            var condition = ParseOpExpr();            
 
             var body = ParseBody();
 
@@ -248,27 +248,6 @@ namespace Nexo
             return new BodyExpr(body);
         }
 
-        private Expr ParseAssignment()
-        {
-            if (Current().Type != TokenType.Identifier || _tokens.Count <= _current + 1 || _tokens[_current + 1].Type != TokenType.Equal)
-            {
-                return ParseEqual();
-            }
-
-            string name = Advance().Lexeme;
-
-            if (Current().Type != TokenType.Equal)
-            {
-                throw new UnexpectedTokenException(Current(), TokenType.Equal);
-            }
-
-            Advance();
-
-            var expr = ParseEqual();
-
-            return new AssignExpr(name, expr);
-        }
-
         private Expr ParseVariableDeclaration()
         {
             if (Current().Type != TokenType.Variables && Current().Type != TokenType.Constant)
@@ -302,6 +281,57 @@ namespace Nexo
         private Expr ParseOpExpr()
         {
             return ParseAssignment();
+        }
+
+        private Expr ParseAssignment()
+        {
+            if (Current().Type != TokenType.Identifier || _tokens.Count <= _current + 1 || _tokens[_current + 1].Type != TokenType.Equal)
+            {
+                return ParseOrExpr();
+            }
+
+            string name = Advance().Lexeme;
+
+            if (Current().Type != TokenType.Equal)
+            {
+                throw new UnexpectedTokenException(Current(), TokenType.Equal);
+            }
+
+            Advance();
+
+            var expr = ParseOrExpr();
+
+            return new AssignExpr(name, expr);
+        }
+
+        private Expr ParseOrExpr()
+        {
+            var left = ParseAndExpr();
+
+            while (!Eof() && Current().Type == TokenType.OpOr)
+            {
+                Advance();
+
+                var right = ParseAndExpr();
+                left = new BinaryExpr(left, right, BinaryExpr.Op.Or);
+            }
+
+            return left;
+        }
+
+        private Expr ParseAndExpr()
+        {
+            var left = ParseEqual();
+
+            while (!Eof() && Current().Type == TokenType.OpAnd)
+            {
+                Advance();
+                
+                var right = ParseEqual();
+                left = new BinaryExpr(left, right, BinaryExpr.Op.And);
+            }
+
+            return left;
         }
 
         private Expr ParseEqual()
@@ -439,6 +469,29 @@ namespace Nexo
             return new CallExpr(call, [.. args]);
         }
 
+        private PrintExpr ParsePrint()
+        {
+            Advance();
+
+            if (Current().Type != TokenType.LeftParen)
+            {
+                throw new Exception("Expected left paren after print");
+            }
+
+            Advance();
+
+            var expr = ParseExpr();
+
+            if (Current().Type != TokenType.RightParen)
+            {
+                throw new Exception("Expected right paren after expression in print");
+            }
+
+            Advance();
+
+            return new PrintExpr(expr);
+        }
+
         private Expr ParsePrimary()
         {
             switch (Current().Type)
@@ -469,29 +522,6 @@ namespace Nexo
                 default:
                     throw new InvalidTokenException(Current());
             }
-        }
-
-        private PrintExpr ParsePrint()
-        {
-            Advance();
-
-            if (Current().Type != TokenType.LeftParen)
-            {
-                throw new Exception("Expected left paren after print");
-            }
-
-            Advance();
-
-            var expr = ParseExpr();
-
-            if (Current().Type != TokenType.RightParen)
-            {
-                throw new Exception("Expected right paren after expression in print");
-            }
-
-            Advance();
-
-            return new PrintExpr(expr);
         }
 
         private bool Eof()
