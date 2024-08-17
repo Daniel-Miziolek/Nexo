@@ -5,14 +5,18 @@ A programming language that I created to learn how other programming languages w
 
 ## Examples
 
-    > (2 + 2) * 2
-    8
-    > let x = 5
-    > print(x)
-    5
-    > x = 10
-    > print(x)
-    10
+    let i = 0;
+
+    while i < 10 {
+        if i % 3 == 0{
+            print("divisible by 3");
+        }
+        else{
+            print(i);
+        };
+
+        i = i + 1;
+    };
 
   
    
