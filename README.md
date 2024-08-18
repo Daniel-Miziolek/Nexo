@@ -7,16 +7,22 @@ A programming language that I created to learn how other programming languages w
 
     let i = 0;
 
-    while i < 10 {
-        if i % 3 == 0{
-            print("divisible by 3");
+    while i < 16 {
+        if i % 3 == 0 && i % 5 == 0{
+            print("Fizz buz");
+        }
+        else if i % 3 == 0{
+            print("Fizz");
+        }
+        else if i % 5 == 0{
+            print("Buzz");
         }
         else{
             print(i);
         };
 
         i = i + 1;
-    };
+    }
 
   
    
