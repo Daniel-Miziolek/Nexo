@@ -5,6 +5,8 @@ A programming language that I created to learn how other programming languages w
 
 ## Examples
 
+    # FizzBuz:)
+    
     let i = 0;
 
     while i < 16 {
