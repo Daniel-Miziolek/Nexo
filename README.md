@@ -5,14 +5,26 @@ A programming language that I created to learn how other programming languages w
 
 ## Examples
 
-    > (2 + 2) * 2
-    8
-    > let x = 5
-    > print(x)
-    5
-    > x = 10
-    > print(x)
-    10
+    # FizzBuz:)
+    
+    let i = 0;
+
+    while i < 16 {
+        if i % 3 == 0 && i % 5 == 0{
+            print("Fizz buz");
+        }
+        else if i % 3 == 0{
+            print("Fizz");
+        }
+        else if i % 5 == 0{
+            print("Buzz");
+        }
+        else{
+            print(i);
+        };
+
+        i = i + 1;
+    }
 
   
    
