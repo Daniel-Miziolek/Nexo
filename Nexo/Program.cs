@@ -18,6 +18,7 @@ namespace Nexo
         Identifier,
         Dot,
         Comma,
+        Hash,
         Number,
         Plus,
         Minus,
@@ -62,8 +63,7 @@ namespace Nexo
             {
                 string source = File.ReadAllText(filePath);
 
-                Lexer lexer = new(source);
-                List<Token> tokens = lexer.ScanTokens();
+                List<Token> tokens = Lexer.Parse(source);
 
                 try
                 {

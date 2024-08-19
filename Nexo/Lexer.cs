@@ -2,16 +2,27 @@
 
 namespace Nexo
 {
-    public class Lexer(string source)
+    public class Lexer
     {
-        private readonly string _source = source;
+        private readonly string _source;
         private readonly List<Token> _tokens = [];
 
         private int _start = 0;
         private int _current = 0;
         private int _line = 1;
 
-        public List<Token> ScanTokens()
+        private Lexer(string source)
+        {
+            _source = source;
+        }
+
+        public static List<Token> Parse(string text)
+        {
+            Lexer lexer = new(text);
+            return lexer.ScanTokens();
+        }
+
+        private List<Token> ScanTokens()
         {
             while (!IsAtEnd())
             {
