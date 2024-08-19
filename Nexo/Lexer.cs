@@ -200,6 +200,16 @@ namespace Nexo
             else if (text == "break") type = TokenType.Break;
             else if (text == "continue") type = TokenType.Continue;
             else if (text == "fun") type = TokenType.Function;
+            else if (text == "True")
+            {
+                _tokens.Add(new Token(TokenType.Boolean, text, true));
+                return;
+            }
+            else if (text == "False")
+            {
+                _tokens.Add(new Token(TokenType.Boolean, text, false));
+                return;
+            }
             _tokens.Add(new Token(type, text, null));
         }
 
