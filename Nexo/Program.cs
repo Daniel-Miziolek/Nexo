@@ -37,6 +37,7 @@ namespace Nexo
         Or,
         OpOr,
         Function,
+        Class,
         LessThan,
         LessThanOrEqual,
         GreaterThan,

@@ -85,7 +85,29 @@ namespace Nexo
                 TokenType.Function => ParseFunctionDeclaration(),
                 _ => ParseOpExpr()
             };
-        }        
+        }       
+
+        private Property ParseProperty()
+        {
+            if (Current().Type != TokenType.Identifier)
+            {
+                throw new UnexpectedTokenException(Current(), TokenType.Identifier);
+            }
+
+            string name = Advance().Lexeme;
+
+            if (Current().Type != TokenType.Equal)
+            {
+                throw new UnexpectedTokenException(Current(), TokenType.Equal);
+            }
+
+            Advance();
+            
+            Expr initializer = ParseOpExpr();
+            
+
+            return new Property(name, initializer);
+        }
 
         private Expr ParseFunctionDeclaration()
         {
@@ -519,6 +541,31 @@ namespace Nexo
                     return ParseContinueExpr();
                 case TokenType.Identifier:
                     return new Identifier(Advance().Lexeme);
+                case TokenType.LeftBrace:
+                    Advance();
+
+                    List<Property> properties = [];
+
+                    while (Current().Type != TokenType.RightBrace)
+                    {
+                        properties.Add(ParseProperty());
+
+                        if (Current().Type != TokenType.Comma)
+                        {
+                            break;
+                        }
+
+                        Advance();
+                    }
+                    
+                    if (Current().Type != TokenType.RightBrace)
+                    {
+                        throw new UnexpectedTokenException(Current(), TokenType.RightBrace);
+                    }
+
+                    Advance();
+
+                    return new ObjectExpr([.. properties]);
                 default:
                     throw new InvalidTokenException(Current());
             }

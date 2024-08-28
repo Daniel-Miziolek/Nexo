@@ -210,6 +210,7 @@ namespace Nexo
                 _tokens.Add(new Token(TokenType.Boolean, text, false));
                 return;
             }
+            else if (text == "class") type = TokenType.Class;
             _tokens.Add(new Token(type, text, null));
         }
 
