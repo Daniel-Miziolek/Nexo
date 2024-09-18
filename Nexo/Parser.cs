@@ -2,7 +2,6 @@
 using Nexo.Exceptions;
 using System.Diagnostics;
 using System.Globalization;
-using System.Text.RegularExpressions;
 using static Nexo.AST.BinaryExpr;
 
 namespace Nexo

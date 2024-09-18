@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Nexo.Exceptions;
-using Nexo.Values;
+﻿using Nexo.Exceptions;
 
 namespace Nexo
 {
@@ -58,7 +54,7 @@ namespace Nexo
         {
             Scope scope = new();
 
-            string filePath = @"C:\Users\Daniel\Desktop\nexoCode.txt";
+            string filePath = @""; // Create a .txt file and provide its full path here
 
             try
             {

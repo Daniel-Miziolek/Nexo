@@ -1,6 +1,4 @@
-﻿using Nexo.AST;
-
-namespace Nexo.Values
+﻿namespace Nexo.Values
 {
     public class ObjectValue(Dictionary<string, Value> properties) : Value
     {
